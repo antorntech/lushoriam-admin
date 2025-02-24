@@ -40,10 +40,18 @@ const Orders = () => {
 
   return (
     <div className="p-5 bg-white shadow-md rounded-lg">
-      <h2 className="text-2xl font-bold text-gray-700 mb-6 text-center">
-        Orders List
-      </h2>
-
+      <div className="mb-5">
+        <h2 className="text-2xl font-bold">Orders List</h2>
+        {orders ? (
+          <p className="text-sm md:text-md text-gray-700">
+            All orders are available here.
+          </p>
+        ) : (
+          <p className="text-sm md:text-md text-gray-700">
+            Orders are not available here.
+          </p>
+        )}
+      </div>
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-300">
           <thead>
@@ -80,7 +88,7 @@ const Orders = () => {
                     onChange={(e) =>
                       handleStatusChange(order.id, e.target.value)
                     }
-                    className="px-3 py-1 border rounded bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="px-3 py-1 border rounded bg-white focus:outline-none"
                   >
                     <option value="Pending">Pending</option>
                     <option value="Done">Done</option>

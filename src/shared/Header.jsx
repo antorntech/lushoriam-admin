@@ -20,30 +20,7 @@ const Header = () => {
   };
   return (
     <div className="px-5 min-h-[70px] bg-white header-shadow flex items-center fixed top-0 w-[calc(100%-250px)] z-40">
-      <div className="w-full hidden md:flex items-center justify-between bg-whtie">
-        <div>
-          <div className="hidden relative md:flex w-full max-w-[24rem]">
-            <Input
-              type="text"
-              label="Search"
-              value={searchText}
-              onChange={onChange}
-              className="pr-20"
-              containerProps={{
-                className: "min-w-0",
-              }}
-            />
-            <Button
-              size="sm"
-              disabled={!searchText}
-              className={`!absolute right-1 top-1 rounded transition-all duration-300 ${
-                searchText ? "bg-[#050828]" : "bg-[#c9c8c8]"
-              }`}
-            >
-              <i className="fa-solid fa-magnifying-glass"></i>
-            </Button>
-          </div>
-        </div>
+      <div className="w-full hidden md:flex items-center justify-end bg-whtie">
         <div className="flex items-center gap-5">
           <div className="flex items-center gap-2">
             <i className="fa-solid fa-calendar-days text-[30px]"></i>
