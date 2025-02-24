@@ -134,7 +134,7 @@ const Login = () => {
                     onChange={handleChange}
                   />
                   {errors.email && (
-                    <Typography className="text-red-800 text-sm mt-1 absolute">
+                    <Typography className="text-red-800 text-sm mt-1 mb-2">
                       {errors.email}
                     </Typography>
                   )}
@@ -143,7 +143,7 @@ const Login = () => {
                   <Typography
                     variant="h6"
                     color="white"
-                    className="mb-1 font-normal mt-6"
+                    className="mb-1 font-normal mt-2"
                   >
                     Password
                   </Typography>
@@ -160,7 +160,7 @@ const Login = () => {
                     onChange={handleChange}
                   />
                   {errors.password && (
-                    <Typography className="text-red-800 text-sm mt-1 absolute">
+                    <Typography className="text-red-800 text-sm mt-1 mb-2">
                       {errors.password}
                     </Typography>
                   )}
@@ -168,7 +168,7 @@ const Login = () => {
               </div>
               <Button
                 type="submit"
-                className="py-2 mt-10 text-md flex items-center justify-center gap-2 bg-primary hover:bg-secondary transition-all duration-500"
+                className="py-1 mt-5 text-sm flex items-center justify-center gap-2 bg-primary hover:bg-secondary transition-all duration-500"
                 fullWidth
               >
                 <span>Log In</span>
@@ -177,7 +177,7 @@ const Login = () => {
                   trigger="loop"
                   delay="2000"
                   colors="primary:#ffffff"
-                  style={{ width: "30px", height: "30px" }}
+                  style={{ width: "20px", height: "30px" }}
                 ></lord-icon>
               </Button>
             </form>
