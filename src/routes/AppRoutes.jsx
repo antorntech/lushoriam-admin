@@ -15,6 +15,9 @@ import EditSlider from "../pages/EditSlider";
 import Notification from "../pages/Notification";
 import MyPdf from "../pages/MyPdf";
 import Orders from "../pages/Orders";
+import Product from "../pages/Product";
+import AddProduct from "../pages/AddProduct";
+import EditProduct from "../pages/EditProduct";
 
 const AppRoutes = () => {
   const user = localStorage.getItem("accessToken");
@@ -24,6 +27,9 @@ const AppRoutes = () => {
       {user ? (
         <>
           <Route path="/" element={<Home />} />
+          <Route path="/products" element={<Product />} />
+          <Route path="/products/add-product" element={<AddProduct />} />
+          <Route path="/products/edit-product/:id" element={<EditProduct />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/sliders" element={<Slider />} />
           <Route path="/sliders/add-slider" element={<AddSlider />} />

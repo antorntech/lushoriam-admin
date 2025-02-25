@@ -8,6 +8,11 @@ const menuItems = [
     icon: "/img/icons/dashboard",
   },
   {
+    title: "Products",
+    link: "/products",
+    icon: "/img/icons/product",
+  },
+  {
     title: "Orders",
     link: "/orders",
     icon: "/img/icons/order",
