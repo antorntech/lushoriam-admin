@@ -152,7 +152,7 @@ const Reviews = () => {
                         <img
                           src={`http://localhost:8000/${review.logo}`}
                           alt={review.name}
-                          className="w-[150px] h-[50px] object-cover rounded"
+                          className="w-[80px] h-[80px] object-cover rounded-full"
                         />
                       </td>
                       <td className="px-6 py-4 border-b">

@@ -201,9 +201,9 @@ const AddReview = () => {
               <i className="fa-solid fa-xmark text-white"></i>
             </button>
             <img
-              src={imagePreview ? imagePreview : "https://placehold.co/150x50"}
+              src={imagePreview ? imagePreview : "https://placehold.co/10x10"}
               alt="Selected"
-              className="max-w-full h-full md:w-[150px] md:h-[50px] object-cover rounded-md"
+              className="max-w-full h-full md:w-[150px] md:h-[150px] object-cover rounded-full"
             />
           </div>
         )}
