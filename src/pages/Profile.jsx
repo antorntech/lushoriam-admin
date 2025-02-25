@@ -53,7 +53,7 @@ const Profile = () => {
         <div>
           <button
             onClick={() => setEditMode(!editMode)}
-            className="bg-[#199bff] text-white px-4 py-2 rounded-md mt-2 md:mt-0"
+            className="bg-primary text-white px-4 py-2 rounded-md mt-2 md:mt-0"
           >
             {editMode ? "Cancel" : "Update Profile"}
           </button>

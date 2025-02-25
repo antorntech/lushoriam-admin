@@ -11,6 +11,9 @@ const AddProduct = () => {
   );
   const [title, setTitle] = useState("");
   const [details, setDetails] = useState("");
+  const [price, setPrice] = useState(0);
+  const [quantity, setQuantity] = useState(0);
+  const [category, setCategory] = useState("Beauty");
   const [fileKey, setFileKey] = useState(Date.now());
   const [uploadProgress, setUploadProgress] = useState(0);
   const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB limit
@@ -33,11 +36,25 @@ const AddProduct = () => {
     setDetails(e.target.value);
   };
 
+  const handlePriceChange = (e) => {
+    setPrice(e.target.value);
+  };
+  const handleQuantityChange = (e) => {
+    setQuantity(e.target.value);
+  };
+  const handleCategoryChange = (e) => {
+    setCategory(e.target.value);
+  };
+
   const handleUpload = async () => {
     const formData = new FormData();
     formData.append("banner", image);
     formData.append("title", title);
     formData.append("details", details);
+    formData.append("price", price);
+    formData.append("quantity", quantity);
+    formData.append("category", category);
+    formData.append("status", "Pending");
 
     try {
       const response = await fetch(
@@ -95,6 +112,15 @@ const AddProduct = () => {
     setUploadProgress(0);
   };
 
+  const categories = [
+    "Beauty",
+    "Electronics",
+    "Fashion",
+    "Home",
+    "Health",
+    "Sports",
+  ];
+
   return (
     <div>
       <div className="flex items-center gap-3">
@@ -121,7 +147,7 @@ const AddProduct = () => {
               type="text"
               size="lg"
               placeholder="Enter product title"
-              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#199bff] focus:!border-t-border-[#199bff] focus:ring-border-[#199bff]/10"
+              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-primary focus:!border-t-border-primary focus:ring-border-primary/10"
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
@@ -140,7 +166,7 @@ const AddProduct = () => {
             </Typography>
             <Textarea
               value={details}
-              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#199bff] focus:!border-t-border-[#199bff] focus:ring-border-[#199bff]/10"
+              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-primary focus:!border-t-border-primary focus:ring-border-primary/10"
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
@@ -148,6 +174,68 @@ const AddProduct = () => {
               rows={5}
               placeholder="Enter product details"
             />
+          </div>
+          <div className="w-full flex flex-col md:flex-row gap-4">
+            <div className="w-full">
+              <Typography
+                variant="h6"
+                color="gray"
+                className="mb-1 font-normal"
+              >
+                Price
+              </Typography>
+              <input
+                type="number"
+                size="lg"
+                placeholder="00.00 ৳"
+                className="w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:border-primary focus:border-t-border-primary focus:outline-none"
+                value={price}
+                name="price"
+                onChange={handlePriceChange}
+              />
+            </div>
+            <div className="w-full">
+              <Typography
+                variant="h6"
+                color="gray"
+                className="mb-1 font-normal"
+              >
+                Quantity
+              </Typography>
+              <input
+                type="number"
+                size="lg"
+                placeholder="0"
+                className="w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:border-primary focus:border-t-border-primary focus:outline-none"
+                value={quantity}
+                name="quantity"
+                onChange={handleQuantityChange}
+              />
+            </div>
+            <div className="w-full">
+              <Typography
+                variant="h6"
+                color="gray"
+                className="mb-1 font-normal"
+              >
+                Category
+              </Typography>
+              <select
+                value={category}
+                name="category"
+                onChange={handleCategoryChange}
+                className="w-full p-2.5 rounded-md border border-gray-300  text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:border-primary focus:border-t-border-primary focus:outline-none"
+              >
+                <option value="" disabled>
+                  Select a category
+                </option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
           <div className="flex flex-col md:flex-row items-center gap-3">
             <div className="w-full md:w-[45%]">
@@ -175,26 +263,35 @@ const AddProduct = () => {
           </div>
           <button
             onClick={handleUpload}
-            className="mt-5 bg-[#199bff] text-white px-4 py-2 rounded"
+            className="mt-5 bg-primary text-white px-4 py-2 rounded"
           >
             Upload
           </button>
         </div>
         {imagePreview && (
-          <div className="relative w-full md:w-1/2 h-[370px] mt-5 md:mt-0 md:ml-5 border-[1px] border-gray-400 rounded-md">
-            <button
-              className="bg-red-800 text-white w-8 h-8 rounded-full absolute top-2 right-2 flex items-center justify-center"
-              onClick={clearPreview}
+          <div className="w-full md:w-1/2">
+            <Typography
+              variant="h6"
+              color="gray"
+              className="mb-1 font-normal mt-2 ml-5"
             >
-              <i className="fa-solid fa-xmark text-white"></i>
-            </button>
-            <img
-              src={
-                imagePreview ? imagePreview : "https://placehold.co/1680x805"
-              }
-              alt="Selected"
-              className="max-w-full h-full md:w-full object-cover rounded-md"
-            />
+              Product Preview
+            </Typography>
+            <div className="relative w-full md:w-1/2 h-[400px] mt-5 md:mt-0 md:ml-5 border-[1px] border-gray-400 rounded-md">
+              <button
+                className="bg-red-800 text-white w-8 h-8 rounded-full absolute top-2 right-2 flex items-center justify-center"
+                onClick={clearPreview}
+              >
+                <i className="fa-solid fa-xmark text-white"></i>
+              </button>
+              <img
+                src={
+                  imagePreview ? imagePreview : "https://placehold.co/1680x805"
+                }
+                alt="Selected"
+                className="max-w-full h-full md:w-full object-contain rounded-md"
+              />
+            </div>
           </div>
         )}
       </div>

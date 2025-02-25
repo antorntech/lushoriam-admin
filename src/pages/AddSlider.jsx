@@ -118,7 +118,7 @@ const AddSlider = () => {
               type="text"
               size="lg"
               placeholder="Enter slider title"
-              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#199bff] focus:!border-t-border-[#199bff] focus:ring-border-[#199bff]/10"
+              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-primary focus:!border-t-border-primary focus:ring-border-primary/10"
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
@@ -137,7 +137,7 @@ const AddSlider = () => {
             </Typography>
             <Textarea
               value={details}
-              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#199bff] focus:!border-t-border-[#199bff] focus:ring-border-[#199bff]/10"
+              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-primary focus:!border-t-border-primary focus:ring-border-primary/10"
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
@@ -172,7 +172,7 @@ const AddSlider = () => {
           </div>
           <button
             onClick={handleUpload}
-            className="mt-5 bg-[#199bff] text-white px-4 py-2 rounded"
+            className="mt-5 bg-primary text-white px-4 py-2 rounded"
           >
             Upload
           </button>

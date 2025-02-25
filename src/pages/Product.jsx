@@ -143,7 +143,13 @@ const Product = () => {
                       Title
                     </th>
                     <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                      Details
+                      Category
+                    </th>
+                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                      Price (৳)
+                    </th>
+                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                      Quantity
                     </th>
                     <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                       Actions
@@ -161,10 +167,16 @@ const Product = () => {
                         />
                       </td>
                       <td className="px-6 py-4 border-b">
-                        <h1 className="text-sm font-bold">{product.title}</h1>
+                        <h1 className="text-sm">{product.title}</h1>
                       </td>
-                      <td className="px-6 py-4 border-b text-sm text-gray-500">
-                        {product.details.slice(0, 80)}...
+                      <td className="px-6 py-4 border-b text-sm">
+                        {product.category}
+                      </td>
+                      <td className="px-6 py-4 border-b text-sm">
+                        {product.price}
+                      </td>
+                      <td className="px-6 py-4 border-b text-sm">
+                        {product.quantity}
                       </td>
                       <td className="px-6 py-4 border-b text-sm">
                         <div className="flex gap-2">

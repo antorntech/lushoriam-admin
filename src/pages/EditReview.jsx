@@ -136,7 +136,7 @@ const EditReview = () => {
                 type="text"
                 size="lg"
                 placeholder="Enter client name"
-                className="w-full !border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#199bff] focus:!border-t-border-[#199bff] focus:ring-border-[#199bff]/10"
+                className="w-full !border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-primary focus:!border-t-border-primary focus:ring-border-primary/10"
                 labelProps={{
                   className: "before:content-none after:content-none",
                 }}
@@ -157,7 +157,7 @@ const EditReview = () => {
                 type="text"
                 size="lg"
                 placeholder="Enter client designation"
-                className="w-full !border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#199bff] focus:!border-t-border-[#199bff] focus:ring-border-[#199bff]/10"
+                className="w-full !border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-primary focus:!border-t-border-primary focus:ring-border-primary/10"
                 labelProps={{
                   className: "before:content-none after:content-none",
                 }}
@@ -177,7 +177,7 @@ const EditReview = () => {
             </Typography>
             <Textarea
               value={comments}
-              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#199bff] focus:!border-t-border-[#199bff] focus:ring-border-[#199bff]/10"
+              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-primary focus:!border-t-border-primary focus:ring-border-primary/10"
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
@@ -207,7 +207,7 @@ const EditReview = () => {
           </div>
           <button
             onClick={handleUpdate}
-            className="mt-5 bg-[#199bff] text-white px-4 py-2 rounded"
+            className="mt-5 bg-primary text-white px-4 py-2 rounded"
           >
             Update
           </button>
