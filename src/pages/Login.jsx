@@ -168,7 +168,7 @@ const Login = () => {
               </div>
               <Button
                 type="submit"
-                className="py-1 mt-5 text-sm flex items-center justify-center gap-2 bg-primary hover:bg-secondary transition-all duration-500"
+                className="py-1 mt-5 mb-2 text-sm flex items-center justify-center gap-2 bg-primary hover:bg-secondary transition-all duration-500"
                 fullWidth
               >
                 <span>Log In</span>
