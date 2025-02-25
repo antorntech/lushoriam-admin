@@ -17,7 +17,7 @@ import MyPdf from "../pages/MyPdf";
 import Orders from "../pages/Orders";
 
 const AppRoutes = () => {
-  const user = localStorage.getItem("email");
+  const user = localStorage.getItem("accessToken");
 
   return (
     <Routes>
