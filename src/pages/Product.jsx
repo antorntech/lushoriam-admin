@@ -72,7 +72,42 @@ const Product = () => {
     }
   };
 
-  // Toggle between table and grid layout
+  // Handle status update
+  const handleStatusUpdate = async (updateId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/v1/products/status/${updateId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update status");
+      }
+
+      const data = await response.json();
+
+      // Check if `data` contains the updated product status
+      if (data?.data?.status) {
+        setProducts((prevProducts) =>
+          prevProducts.map((product) =>
+            product._id === updateId
+              ? { ...product, status: data.data.status }
+              : product
+          )
+        );
+      } else {
+        throw new Error("Invalid response format");
+      }
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
+
   const toggleLayout = () => setIsTableLayout(!isTableLayout);
 
   // Pagination calculations
@@ -152,41 +187,72 @@ const Product = () => {
                       Quantity
                     </th>
                     <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                       Actions
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {currentItems.map((product) => (
-                    <tr key={product._id} className="hover:bg-gray-100">
+                    <tr key={product?._id} className="hover:bg-gray-100">
                       <td className="px-6 py-4 border-b">
                         <img
                           src={`http://localhost:8000${product?.banner}`}
-                          alt={product.title}
+                          alt={product?.title}
                           className="w-20 h-20 object-cover rounded"
                         />
                       </td>
-                      <td className="px-6 py-4 border-b">
-                        <h1 className="text-sm">{product.title}</h1>
+                      <td className="px-6 py-4 border-b text-sm">
+                        {product?.title}
                       </td>
                       <td className="px-6 py-4 border-b text-sm">
-                        {product.category}
+                        {product?.category}
                       </td>
                       <td className="px-6 py-4 border-b text-sm">
-                        {product.price}
+                        {product?.price}
                       </td>
                       <td className="px-6 py-4 border-b text-sm">
-                        {product.quantity}
+                        {product?.quantity}
+                      </td>
+                      <td className="px-6 py-4 border-b text-sm">
+                        <span className="relative">
+                          <div
+                            className={`w-2 h-2 rounded-full absolute -top-1 -right-2 ${
+                              product?.status === "Active"
+                                ? "bg-green-500"
+                                : "bg-red-500"
+                            }`}
+                          ></div>
+                          <span className="font-semibold">
+                            {product?.status}
+                          </span>
+                        </span>
                       </td>
                       <td className="px-6 py-4 border-b text-sm">
                         <div className="flex gap-2">
-                          <Link to={`/products/edit-product/${product._id}`}>
+                          <button
+                            className={`text-sm px-2.5 py-1 rounded-md border-2 transition-all duration-500 ${
+                              product?.status === "Active"
+                                ? "text-green-800 border-green-800 hover:bg-green-800 hover:text-white"
+                                : "text-red-800 border-red-800 hover:bg-red-800 hover:text-white"
+                            }`}
+                            onClick={() => handleStatusUpdate(product?._id)}
+                          >
+                            <i
+                              className={`fa-solid fa-${
+                                product?.status === "Active" ? "pause" : "play"
+                              }`}
+                            ></i>
+                          </button>
+                          <Link to={`/products/edit-product/${product?._id}`}>
                             <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
                               <i className="fa-solid fa-pencil"></i>
                             </button>
                           </Link>
                           <button
-                            onClick={() => openDeleteConfirmModal(product._id)}
+                            onClick={() => openDeleteConfirmModal(product?._id)}
                             className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                           >
                             <i className="fa-regular fa-trash-can"></i>
@@ -203,31 +269,31 @@ const Product = () => {
             <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {currentItems.map((product) => (
                 <div
-                  key={product._id}
+                  key={product?._id}
                   className="w-full flex flex-col shadow-md rounded-md p-3"
                 >
                   {/* Product Image */}
                   <img
                     src={`http://localhost:8000${product?.banner}`}
-                    alt={product.title}
+                    alt={product?.title}
                     className="w-full h-full md:h-[250px] object-cover rounded"
                   />
                   {/* Product Details */}
-                  <h1 className="text-xl font-bold mt-3">{product.title}</h1>
+                  <h1 className="text-xl font-bold mt-3">{product?.title}</h1>
                   <p className="text-sm text-gray-500">
-                    {product.details.slice(0, 80)}...
+                    {product?.details.slice(0, 80)}...
                   </p>
                   {/* Action Buttons */}
                   <div className="flex gap-2 mt-2">
                     {/* Edit Product */}
-                    <Link to={`/products/edit-product/${product._id}`}>
+                    <Link to={`/products/edit-product/${product?._id}`}>
                       <button className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-500">
                         <i className="fa-solid fa-pencil"></i>
                       </button>
                     </Link>
                     {/* Delete Product */}
                     <button
-                      onClick={() => openDeleteConfirmModal(product._id)}
+                      onClick={() => openDeleteConfirmModal(product?._id)}
                       className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-500"
                     >
                       <i className="fa-regular fa-trash-can"></i>

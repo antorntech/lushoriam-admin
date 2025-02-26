@@ -6,9 +6,7 @@ import { toast } from "react-toastify";
 const AddProduct = () => {
   const navigate = useNavigate();
   const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(
-    "https://placehold.co/1680x805"
-  );
+  const [imagePreview, setImagePreview] = useState("/img/missing-image.jpg");
   const [title, setTitle] = useState("");
   const [details, setDetails] = useState("");
   const [price, setPrice] = useState(0);
@@ -107,7 +105,7 @@ const AddProduct = () => {
 
   const clearPreview = () => {
     setImage(null);
-    setImagePreview("https://placehold.co/1680x805");
+    setImagePreview("/img/missing-image.jpg");
     setFileKey(Date.now());
     setUploadProgress(0);
   };
@@ -285,11 +283,9 @@ const AddProduct = () => {
                 <i className="fa-solid fa-xmark text-white"></i>
               </button>
               <img
-                src={
-                  imagePreview ? imagePreview : "https://placehold.co/1680x805"
-                }
+                src={imagePreview ? imagePreview : "/img/missing-image.jpg"}
                 alt="Selected"
-                className="max-w-full h-full md:w-full object-contain rounded-md"
+                className="max-w-full h-full md:w-full object-cover rounded-md"
               />
             </div>
           </div>
