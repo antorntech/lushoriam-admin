@@ -1,47 +1,95 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const Orders = () => {
+  const [orders, setOrders] = useState([]);
+
+  const fetchOrders = async () => {
+    try {
+      const response = await fetch("http://localhost:8000/api/v1/orders");
+      const data = await response.json();
+      setOrders(data);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    }
+  };
+
+  // Fetch orders when the component mounts
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  console.log(orders);
+
   // Sample orders data
-  const [orders, setOrders] = useState([
-    {
-      id: 1,
-      customerName: "John Doe",
-      product: "Printed Sunny Umbrella",
-      quantity: 2,
-      totalPrice: 1280,
-      status: "Pending",
-    },
-    {
-      id: 2,
-      customerName: "Jane Smith",
-      product: "Elegant Raincoat",
-      quantity: 1,
-      totalPrice: 900,
-      status: "Pending",
-    },
-    {
-      id: 3,
-      customerName: "David Johnson",
-      product: "Classic Leather Wallet",
-      quantity: 3,
-      totalPrice: 2100,
-      status: "Done",
-    },
-  ]);
+  // const [orders, setOrders] = useState([
+  //   {
+  //     id: 1,
+  //     customerName: "John Doe",
+  //     product: "Printed Sunny Umbrella",
+  //     quantity: 2,
+  //     totalPrice: 1280,
+  //     status: "Pending",
+  //   },
+  //   {
+  //     id: 2,
+  //     customerName: "Jane Smith",
+  //     product: "Elegant Raincoat",
+  //     quantity: 1,
+  //     totalPrice: 900,
+  //     status: "Pending",
+  //   },
+  //   {
+  //     id: 3,
+  //     customerName: "David Johnson",
+  //     product: "Classic Leather Wallet",
+  //     quantity: 3,
+  //     totalPrice: 2100,
+  //     status: "Done",
+  //   },
+  // ]);
 
   // Function to update order status
-  const handleStatusChange = (orderId, newStatus) => {
-    setOrders((prevOrders) =>
-      prevOrders.map((order) =>
-        order.id === orderId ? { ...order, status: newStatus } : order
-      )
-    );
+  const handleStatusChange = async (orderId, newStatus) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/v1/orders/${orderId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status: newStatus }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update order status");
+      }
+
+      const data = await response.json();
+      toast.success(data.message, {
+        autoClose: 1000,
+      });
+
+      // Optionally, update the state to reflect the new status in UI
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order.id === orderId ? { ...order, status: newStatus } : order
+        )
+      );
+
+      fetchOrders();
+    } catch (error) {
+      console.error("Error updating status:", error);
+      alert("Something went wrong! Try again.");
+    }
   };
 
   return (
     <div className="p-5 bg-white shadow-md rounded-lg">
       <div className="mb-5">
-        <h2 className="text-2xl font-bold">Orders List</h2>
+        <h2 className="text-2xl font-bold">Orders List ({orders.length})</h2>
         {orders ? (
           <p className="text-sm md:text-md text-gray-700">
             All orders are available here.
@@ -56,42 +104,81 @@ const Orders = () => {
         <table className="min-w-full bg-white border border-gray-300">
           <thead>
             <tr className="bg-gray-100 text-gray-700">
-              <th className="px-4 py-2 border">Order ID</th>
-              <th className="px-4 py-2 border">Customer Name</th>
-              <th className="px-4 py-2 border">Product</th>
-              <th className="px-4 py-2 border">Quantity</th>
-              <th className="px-4 py-2 border">Total Price (TK)</th>
-              <th className="px-4 py-2 border">Status</th>
-              <th className="px-4 py-2 border">Action</th>
+              <th className="px-4 py-2 border whitespace-nowrap">Order ID</th>
+              <th className="px-4 py-2 border whitespace-nowrap">
+                Customer Name
+              </th>
+              <th className="px-4 py-2 border whitespace-nowrap">
+                Customer Address
+              </th>
+              <th className="px-4 py-2 border whitespace-nowrap">Mobile</th>
+              <th className="px-4 py-2 border whitespace-nowrap">Product</th>
+              <th className="px-4 py-2 border whitespace-nowrap">Quantity</th>
+              <th className="px-4 py-2 border whitespace-nowrap">Delivery</th>
+              <th className="px-4 py-2 border whitespace-nowrap">
+                Total Price (৳)
+              </th>
+              <th className="px-4 py-2 border whitespace-nowrap">Status</th>
+              <th className="px-4 py-2 border whitespace-nowrap">Action</th>
             </tr>
           </thead>
           <tbody>
             {orders.map((order) => (
               <tr key={order.id} className="text-center border-b">
-                <td className="px-4 py-3 border">{order.id}</td>
-                <td className="px-4 py-3 border">{order.customerName}</td>
-                <td className="px-4 py-3 border">{order.product}</td>
-                <td className="px-4 py-3 border">{order.quantity}</td>
-                <td className="px-4 py-3 border">{order.totalPrice} TK</td>
-                <td
-                  className={`px-4 py-3 border font-semibold ${
-                    order.status === "Pending"
-                      ? "text-yellow-600"
-                      : "text-green-600"
-                  }`}
-                >
-                  {order.status}
+                <td className="px-4 py-3 border whitespace-nowrap">
+                  {order.orderId}
+                </td>
+                <td className="px-4 py-3 border whitespace-nowrap">
+                  {order.name}
+                </td>
+                <td className="px-4 py-3 border whitespace-nowrap">
+                  {order.address}
+                </td>
+                <td className="px-4 py-3 border whitespace-nowrap">
+                  {order.mobile}
+                </td>
+                <td className="px-4 py-3 border whitespace-nowrap">
+                  {order.productName}
+                </td>
+                <td className="px-4 py-3 border whitespace-nowrap">
+                  {order.quantity}
+                </td>
+                <td className="px-4 py-3 border whitespace-nowrap">
+                  {order.delivery}
+                </td>
+                <td className="px-4 py-3 border whitespace-nowrap">
+                  {order.totalAmount}
+                </td>
+                <td className={`px-4 py-3 border `}>
+                  <p
+                    className={`text-white px-2 py-1 w-[110px] capitalize rounded-md ${
+                      order.status === "pending"
+                        ? "bg-yellow-600"
+                        : order.status === "processing"
+                        ? "bg-blue-600"
+                        : order.status === "shipped"
+                        ? "bg-green-600"
+                        : order.status === "delivered"
+                        ? "bg-green-600"
+                        : "bg-red-600"
+                    }`}
+                  >
+                    {order.status}
+                  </p>
                 </td>
                 <td className="px-4 py-3 border">
                   <select
                     value={order.status}
                     onChange={(e) =>
-                      handleStatusChange(order.id, e.target.value)
+                      handleStatusChange(order._id, e.target.value)
                     }
                     className="px-3 py-1 border rounded bg-white focus:outline-none"
                   >
-                    <option value="Pending">Pending</option>
-                    <option value="Done">Done</option>
+                    <option value="pending">Pending</option>
+                    <option value="processing">Processing</option>
+                    <option value="shipped">Shipped</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="cancelled">Cancelled</option>
                   </select>
                 </td>
               </tr>
