@@ -21,36 +21,8 @@ const Orders = () => {
 
   console.log(orders);
 
-  // Sample orders data
-  // const [orders, setOrders] = useState([
-  //   {
-  //     id: 1,
-  //     customerName: "John Doe",
-  //     product: "Printed Sunny Umbrella",
-  //     quantity: 2,
-  //     totalPrice: 1280,
-  //     status: "Pending",
-  //   },
-  //   {
-  //     id: 2,
-  //     customerName: "Jane Smith",
-  //     product: "Elegant Raincoat",
-  //     quantity: 1,
-  //     totalPrice: 900,
-  //     status: "Pending",
-  //   },
-  //   {
-  //     id: 3,
-  //     customerName: "David Johnson",
-  //     product: "Classic Leather Wallet",
-  //     quantity: 3,
-  //     totalPrice: 2100,
-  //     status: "Done",
-  //   },
-  // ]);
-
   // Function to update order status
-  const handleStatusChange = async (orderId, newStatus) => {
+  const handleStatusChange = async (orderId, newStatus, productId) => {
     try {
       const response = await fetch(
         `http://localhost:8000/api/v1/orders/${orderId}`,
@@ -59,7 +31,7 @@ const Orders = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ status: newStatus }),
+          body: JSON.stringify({ productId, status: newStatus }),
         }
       );
 
@@ -157,7 +129,7 @@ const Orders = () => {
                         : order.status === "processing"
                         ? "bg-blue-600"
                         : order.status === "shipped"
-                        ? "bg-green-600"
+                        ? "bg-purple-600"
                         : order.status === "delivered"
                         ? "bg-green-600"
                         : "bg-red-600"
@@ -170,7 +142,11 @@ const Orders = () => {
                   <select
                     value={order.status}
                     onChange={(e) =>
-                      handleStatusChange(order._id, e.target.value)
+                      handleStatusChange(
+                        order._id,
+                        e.target.value,
+                        order.productId
+                      )
                     }
                     className="px-3 py-1 border rounded bg-white focus:outline-none"
                   >

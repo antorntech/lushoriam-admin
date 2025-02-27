@@ -7,6 +7,10 @@ import useGetData from "../utils/useGetData";
 const Home = () => {
   const orders = useGetData("orders");
   const reviews = useGetData("reviews");
+  const products = useGetData("products");
+  const activeProduct = products?.find(
+    (product) => product.status === "Active"
+  );
 
   const pendingOrders = orders?.filter((order) => order.status === "pending");
   const completedOrders = orders?.filter(
@@ -42,6 +46,21 @@ const Home = () => {
         </div>
         <div className="w-full mt-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="flex items-center justify-between bg-white border border-gray-200 rounded-md p-5">
+              <div className="">
+                <h2 className="text-xl font-bold">Total Products</h2>
+                <p className="text-3xl font-bold text-primary">
+                  {activeProduct?.quantity}
+                </p>
+              </div>
+              <div className="">
+                <img
+                  src="/img/icons/total-products.png"
+                  alt="total-products.png"
+                  className="size-14 object-contain"
+                />
+              </div>
+            </div>
             <div className="flex items-center justify-between bg-white border border-gray-200 rounded-md p-5">
               <div className="">
                 <h2 className="text-xl font-bold">Pending Orders</h2>
