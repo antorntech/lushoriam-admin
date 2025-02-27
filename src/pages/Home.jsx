@@ -2,8 +2,22 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import HomeCustomerSay from "../components/HomeCustomerSay";
 import { Avatar } from "@material-tailwind/react";
+import useGetData from "../utils/useGetData";
 
 const Home = () => {
+  const orders = useGetData("orders");
+  const reviews = useGetData("reviews");
+
+  const pendingOrders = orders?.filter((order) => order.status === "pending");
+  const completedOrders = orders?.filter(
+    (order) => order.status === "delivered"
+  );
+
+  const totalSales = completedOrders?.reduce(
+    (acc, order) => acc + order.totalAmount,
+    0
+  );
+
   return (
     <div className="flex flex-col lg:flex-row items-start justify-between gap-5">
       <div className="w-full lg:w-[70%]">
@@ -28,17 +42,78 @@ const Home = () => {
         </div>
         <div className="w-full mt-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            <div className="bg-white border border-gray-200 rounded-md p-5">
-              <h2 className="text-xl font-bold">Pending Orders</h2>
-              <p className="text-3xl font-bold text-primary">0</p>
+            <div className="flex items-center justify-between bg-white border border-gray-200 rounded-md p-5">
+              <div className="">
+                <h2 className="text-xl font-bold">Pending Orders</h2>
+                <p className="text-3xl font-bold text-primary">
+                  {pendingOrders?.length}
+                </p>
+              </div>
+              <div className="">
+                <img
+                  src="/img/icons/pending-orders.png"
+                  alt="pending-orders.png"
+                  className="size-12 object-contain"
+                />
+              </div>
             </div>
-            <div className="bg-white border border-gray-200 rounded-md p-5">
-              <h2 className="text-xl font-bold">Completed Orders</h2>
-              <p className="text-3xl font-bold text-primary">0</p>
+            <div className="flex items-center justify-between bg-white border border-gray-200 rounded-md p-5">
+              <div>
+                <h2 className="text-xl font-bold">Completed Orders</h2>
+                <p className="text-3xl font-bold text-primary">
+                  {completedOrders?.length}
+                </p>
+              </div>
+              <div>
+                <img
+                  src="/img/icons/completed-orders.png"
+                  alt="completed-orders.png"
+                  className="size-14 object-contain"
+                />
+              </div>
             </div>
-            <div className="bg-white border border-gray-200 rounded-md p-5">
-              <h2 className="text-xl font-bold">Total Sales</h2>
-              <p className="text-3xl font-bold text-primary">0</p>
+            <div className="flex items-center justify-between bg-white border border-gray-200 rounded-md p-5">
+              <div>
+                <h2 className="text-xl font-bold">Total Orders</h2>
+                <p className="text-3xl font-bold text-primary">
+                  {orders?.length}
+                </p>
+              </div>
+              <div>
+                <img
+                  src="/img/icons/total-orders.png"
+                  alt="total-orders.png"
+                  className="size-14 object-contain"
+                />
+              </div>
+            </div>
+            <div className="flex items-center justify-between bg-white border border-gray-200 rounded-md p-5">
+              <div>
+                <h2 className="text-xl font-bold">Total Reviews</h2>
+                <p className="text-3xl font-bold text-primary">
+                  {reviews?.length}
+                </p>
+              </div>
+              <div>
+                <img
+                  src="/img/icons/total-reviews.png"
+                  alt="total-reviews.png"
+                  className="size-14 object-contain"
+                />
+              </div>
+            </div>
+            <div className="flex items-center justify-between bg-white border border-gray-200 rounded-md p-5">
+              <div>
+                <h2 className="text-xl font-bold">Total Sales</h2>
+                <p className="text-3xl font-bold text-primary">{totalSales}</p>
+              </div>
+              <div>
+                <img
+                  src="/img/icons/total-sales.png"
+                  alt="total-sales.png"
+                  className="size-14 object-contain"
+                />
+              </div>
             </div>
           </div>
         </div>
