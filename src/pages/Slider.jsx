@@ -105,14 +105,6 @@ const Slider = () => {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          {selectedItemId ? (
-            <Link
-              to={`/view-pdf/${selectedItemId}`}
-              className="bg-cyan-500 text-white px-4 py-2 rounded-md"
-            >
-              View PDF
-            </Link>
-          ) : null}
           <button
             className="bg-green-600 text-white px-4 py-2 rounded-md mt-2 md:mt-0"
             onClick={toggleLayout}

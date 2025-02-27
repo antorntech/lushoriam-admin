@@ -150,7 +150,7 @@ const Reviews = () => {
                     <tr key={review.id} className="hover:bg-gray-100">
                       <td className="px-6 py-4 border-b">
                         <img
-                          src={`http://localhost:8000/${review.logo}`}
+                          src={`http://localhost:8000/${review.avatar}`}
                           alt={review.name}
                           className="w-[50px] h-[50px] object-cover rounded-full"
                         />
@@ -193,7 +193,7 @@ const Reviews = () => {
                   className="w-full flex flex-col shadow-md rounded-md p-3"
                 >
                   <img
-                    src={`http://localhost:8000/${review.logo}`}
+                    src={`http://localhost:8000/${review.avatar}`}
                     alt={review.name}
                     className="w-[150px] h-[150px]"
                   />

@@ -24,7 +24,7 @@ const EditReview = () => {
         setName(data.name);
         setDesignation(data.designation);
         setComments(data.comments);
-        setImagePreview(`http://localhost:8000/${data.logo}`);
+        setImagePreview(`http://localhost:8000/${data.avatar}`);
       });
   }, [id, navigate]);
 
@@ -54,7 +54,7 @@ const EditReview = () => {
   const handleUpdate = () => {
     const formData = new FormData();
     if (image) {
-      formData.append("logo", image);
+      formData.append("avatar", image);
     }
     formData.append("name", name);
     formData.append("designation", designation);

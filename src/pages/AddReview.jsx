@@ -40,7 +40,7 @@ const AddReview = () => {
 
   const handleUpload = async () => {
     const formData = new FormData();
-    formData.append("logo", image);
+    formData.append("avatar", image);
     formData.append("name", name);
     formData.append("designation", designation);
     formData.append("comments", comments);
