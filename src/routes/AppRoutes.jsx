@@ -13,7 +13,6 @@ import EditReview from "../pages/EditReview";
 import EditFaq from "../pages/EditFaq";
 import EditSlider from "../pages/EditSlider";
 import Notification from "../pages/Notification";
-import MyPdf from "../pages/MyPdf";
 import Orders from "../pages/Orders";
 import Product from "../pages/Product";
 import AddProduct from "../pages/AddProduct";
@@ -42,7 +41,6 @@ const AppRoutes = () => {
           <Route path="/faqs/edit-faq/:id" element={<EditFaq />} />
           <Route path="/notification" element={<Notification />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/view-pdf/:id" element={<MyPdf />} />
           <Route path="*" element={<Navigate to="/" />} />
         </>
       ) : (
