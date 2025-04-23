@@ -7,18 +7,22 @@ import Invoice from "../components/Invoice";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchOrders();
   }, []);
 
   const fetchOrders = async () => {
+    setLoading(true);
     try {
       const response = await fetch("http://localhost:8000/api/v1/orders");
       const data = await response.json();
       setOrders(data);
     } catch (error) {
       console.error("Error fetching orders:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -67,9 +71,17 @@ const Orders = () => {
           </p>
         </div>
         <div>
-          <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+          <button
+            onClick={fetchOrders}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center"
+          >
             Refresh
-            <FontAwesomeIcon icon={faArrowsRotate} className="ml-2" />
+            <FontAwesomeIcon
+              icon={faArrowsRotate}
+              className={`ml-2 transition-transform duration-300 ${
+                loading ? "animate-spin" : ""
+              }`}
+            />
           </button>
         </div>
       </div>
