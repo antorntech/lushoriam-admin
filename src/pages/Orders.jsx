@@ -68,8 +68,8 @@ const Orders = () => {
   return (
     <div className="p-5 bg-white rounded-lg">
       {/* Header section */}
-      <div className="flex justify-between items-center">
-        <div className="mb-5">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-5 gap-2">
+        <div>
           <h2 className="text-2xl font-bold">Orders List ({orders.length})</h2>
           <p className="text-sm md:text-md text-gray-700">
             {orders.length
