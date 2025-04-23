@@ -209,7 +209,7 @@ const Product = () => {
                           // src={`http://localhost:8000${product?.banner}`}
                           src={product?.banner}
                           alt={product?.title}
-                          className="w-32 h-12 rounded"
+                          className="w-32 md:w-20 h-12 rounded"
                         />
                       </td>
                       <td className="px-6 py-4 border-b text-sm">
