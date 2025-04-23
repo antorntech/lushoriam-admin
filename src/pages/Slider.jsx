@@ -4,6 +4,8 @@ import Loader from "../loader/Loader";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import { toast } from "react-toastify";
 
+const API_URL = "https://lushoriam-server-abnd.vercel.app";
+
 const Slider = () => {
   // State variables
   const [sliders, setSliders] = useState([]);
@@ -20,7 +22,11 @@ const Slider = () => {
   const fetchSliders = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:8000/api/v1/sliders");
+      const response = await fetch(`${API_URL}/api/v1/sliders`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       const data = await response.json();
       setSliders(data);
     } catch (error) {
@@ -48,7 +54,7 @@ const Slider = () => {
     if (selectedItemId) {
       try {
         const response = await fetch(
-          `http://localhost:8000/api/v1/sliders/delete/${selectedItemId}`,
+          `${API_URL}/api/v1/sliders/delete/${selectedItemId}`,
           {
             method: "DELETE",
           }
@@ -147,7 +153,8 @@ const Slider = () => {
                     <tr key={slider._id} className="hover:bg-gray-100">
                       <td className="px-6 py-4 border-b">
                         <img
-                          src={`http://localhost:8000${slider?.banner}`}
+                          src={slider?.banner}
+                          // src={`http://localhost:8000${slider?.banner}`}
                           alt={slider.title}
                           className="w-20 h-20 object-cover rounded"
                         />
@@ -188,7 +195,8 @@ const Slider = () => {
                 >
                   {/* Slider Image */}
                   <img
-                    src={`http://localhost:8000${slider?.banner}`}
+                    src={slider?.banner}
+                    // src={`http://localhost:8000${slider?.banner}`}
                     alt={slider.title}
                     className="w-full h-full md:h-[250px] object-cover rounded"
                   />

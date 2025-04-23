@@ -4,6 +4,8 @@ import Loader from "../loader/Loader";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import { toast } from "react-toastify";
 
+const API_URL = "https://lushoriam-server-abnd.vercel.app";
+
 const Reviews = () => {
   // State variables
   const [reviews, setReviews] = useState([]);
@@ -20,7 +22,12 @@ const Reviews = () => {
   const fetchReviews = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:8000/api/v1/reviews");
+      const response = await fetch(`${API_URL}/api/v1/reviews`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
       const data = await response.json();
       setReviews(data);
     } catch (error) {
@@ -48,7 +55,7 @@ const Reviews = () => {
     if (selectedItemId) {
       try {
         const response = await fetch(
-          `http://localhost:8000/api/v1/reviews/delete/${selectedItemId}`,
+          `${API_URL}/api/v1/reviews/delete/${selectedItemId}`,
           {
             method: "DELETE",
           }
@@ -150,7 +157,8 @@ const Reviews = () => {
                     <tr key={review.id} className="hover:bg-gray-100">
                       <td className="px-6 py-4 border-b">
                         <img
-                          src={`http://localhost:8000/${review.avatar}`}
+                          src={review?.avatar}
+                          // src={`http://localhost:8000/${review.avatar}`}
                           alt={review.name}
                           className="w-[50px] h-[50px] object-cover rounded-full"
                         />
@@ -193,7 +201,8 @@ const Reviews = () => {
                   className="w-full flex flex-col shadow-md rounded-md p-3"
                 >
                   <img
-                    src={`http://localhost:8000/${review.avatar}`}
+                    src={review?.avatar}
+                    // src={`http://localhost:8000/${review.avatar}`}
                     alt={review.name}
                     className="w-[150px] h-[150px]"
                   />

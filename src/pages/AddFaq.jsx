@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
+const API_URL = "https://lushoriam-server-abnd.vercel.app";
+
 const AddFaq = () => {
   const navigate = useNavigate();
   const [question, setQuestion] = useState("");
@@ -22,7 +24,7 @@ const AddFaq = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:8000/api/v1/faqs/add", {
+      const response = await fetch(`${API_URL}/api/v1/faqs/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -3,28 +3,16 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
+const API_URL = "https://lushoriam-server-abnd.vercel.app";
+
 const AddSlider = () => {
   const navigate = useNavigate();
-  const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(
     "https://placehold.co/1680x805"
   );
   const [title, setTitle] = useState("");
   const [details, setDetails] = useState("");
-  const [fileKey, setFileKey] = useState(Date.now());
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB limit
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file && file.size > MAX_FILE_SIZE) {
-      alert("File size exceeds 50MB limit.");
-      setFileKey(Date.now());
-    } else {
-      setImage(file);
-      setImagePreview(URL.createObjectURL(file)); // Set the image preview
-    }
-  };
+  const [banner, setBanner] = useState("");
 
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
@@ -33,16 +21,25 @@ const AddSlider = () => {
     setDetails(e.target.value);
   };
 
+  const handleBannerChange = (e) => {
+    setBanner(e.target.value);
+    setImagePreview(e.target.value);
+  };
+
   const handleUpload = async () => {
-    const formData = new FormData();
-    formData.append("banner", image);
-    formData.append("title", title);
-    formData.append("details", details);
+    const data = {
+      title,
+      details,
+      banner,
+    };
 
     try {
-      const response = await fetch("http://localhost:8000/api/v1/sliders/add", {
+      const response = await fetch(`${API_URL}/api/v1/sliders/add`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
         method: "POST",
-        body: formData,
+        body: JSON.stringify(data),
       });
 
       if (!response.ok) {
@@ -67,29 +64,21 @@ const AddSlider = () => {
       navigate("/sliders");
 
       // Reset the form
-      setImage(null);
-      setImagePreview(null);
       setTitle("");
       setDetails("");
-      setFileKey(Date.now());
-      setUploadProgress(0);
+      setBanner("");
     } catch (error) {
       console.error("Error uploading file", error);
       // Reset the form in case of error
-      setImage(null);
-      setImagePreview(null);
       setTitle("");
       setDetails("");
-      setFileKey(Date.now());
-      setUploadProgress(0);
+      setBanner("");
     }
   };
 
   const clearPreview = () => {
-    setImage(null);
+    setBanner("");
     setImagePreview("https://placehold.co/1680x805");
-    setFileKey(Date.now());
-    setUploadProgress(0);
   };
 
   return (
@@ -147,7 +136,7 @@ const AddSlider = () => {
             />
           </div>
           <div className="flex flex-col md:flex-row items-center gap-3">
-            <div className="w-full md:w-[45%]">
+            <div className="w-full">
               <Typography
                 variant="h6"
                 color="gray"
@@ -156,18 +145,13 @@ const AddSlider = () => {
                 Banner
               </Typography>
               <input
-                key={fileKey}
-                type="file"
-                onChange={handleImageChange}
-                className=""
+                type="text"
+                placeholder="Enter banner url"
+                className="w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:border-primary focus:border-t-border-primary focus:outline-none"
+                value={banner}
+                name="banner"
+                onChange={handleBannerChange}
               />
-              {uploadProgress > 0 && (
-                <div className="mt-3">
-                  <progress value={uploadProgress} max="100">
-                    {uploadProgress}%
-                  </progress>
-                </div>
-              )}
             </div>
           </div>
           <button

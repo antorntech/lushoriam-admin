@@ -1,37 +1,31 @@
 import { Input, Textarea, Typography } from "@material-tailwind/react";
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const API_URL = "https://lushoriam-server-abnd.vercel.app";
-
-const EditProduct = () => {
-  const { id } = useParams();
+const AddProduct = () => {
   const navigate = useNavigate();
   const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(
-    "https://placehold.co/1680x805"
-  );
+  const [imagePreview, setImagePreview] = useState("/img/missing-image.jpg");
   const [title, setTitle] = useState("");
   const [details, setDetails] = useState("");
-  const [price, setPrice] = useState("");
-  const [quantity, setQuantity] = useState("");
+  const [price, setPrice] = useState(0);
+  const [quantity, setQuantity] = useState(0);
   const [category, setCategory] = useState("Beauty");
-  const [banner, setBanner] = useState("");
+  const [fileKey, setFileKey] = useState(Date.now());
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB limit
 
-  useEffect(() => {
-    fetch(`${API_URL}/api/v1/products/${id}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setTitle(data?.title);
-        setDetails(data?.details);
-        setPrice(data?.price);
-        setQuantity(data?.quantity);
-        setCategory(data?.category);
-        setBanner(data?.banner);
-        setImagePreview(data?.banner);
-      });
-  }, [id, navigate]);
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.size > MAX_FILE_SIZE) {
+      alert("File size exceeds 50MB limit.");
+      setFileKey(Date.now());
+    } else {
+      setImage(file);
+      setImagePreview(URL.createObjectURL(file)); // Set the image preview
+    }
+  };
 
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
@@ -50,29 +44,24 @@ const EditProduct = () => {
     setCategory(e.target.value);
   };
 
-  const handleBannerChange = (e) => {
-    setBanner(e.target.value);
-    setImagePreview(e.target.value);
-  };
-
-  const handleUpdate = async () => {
-    const data = {
-      title,
-      details,
-      price,
-      quantity,
-      category,
-      banner,
-    };
+  const handleUpload = async () => {
+    const formData = new FormData();
+    formData.append("banner", image);
+    formData.append("title", title);
+    formData.append("details", details);
+    formData.append("price", price);
+    formData.append("quantity", quantity);
+    formData.append("category", category);
+    formData.append("status", "Pending");
 
     try {
-      const response = await fetch(`${API_URL}/api/v1/products/update/${id}`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "PUT",
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        "http://localhost:8000/api/v1/products/add",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to upload file");
@@ -81,7 +70,7 @@ const EditProduct = () => {
       const result = await response.json();
 
       // Show success toast
-      toast.success("Product updated successfully", {
+      toast.success("Upload successful", {
         position: "top-right",
         hideProgressBar: false,
         autoClose: 1000,
@@ -96,27 +85,27 @@ const EditProduct = () => {
       navigate("/products");
 
       // Reset the form
+      setImage(null);
+      setImagePreview(null);
       setTitle("");
       setDetails("");
-      setPrice("");
-      setQuantity("");
-      setCategory("Beauty");
-      setBanner("");
+      setFileKey(Date.now());
+      setUploadProgress(0);
     } catch (error) {
       console.error("Error uploading file", error);
       // Reset the form in case of error
+      setImage(null);
+      setImagePreview(null);
       setTitle("");
       setDetails("");
-      setPrice("");
-      setQuantity("");
-      setCategory("Beauty");
-      setBanner("");
+      setFileKey(Date.now());
+      setUploadProgress(0);
     }
   };
 
   const clearPreview = () => {
     setImage(null);
-    setImagePreview("https://placehold.co/1680x805");
+    setImagePreview("/img/missing-image.jpg");
     setFileKey(Date.now());
     setUploadProgress(0);
   };
@@ -140,9 +129,9 @@ const EditProduct = () => {
           <i className="fa-solid fa-hand-point-left"></i>
         </button>
         <div>
-          <h1 className="text-xl font-bold">Edit Product</h1>
+          <h1 className="text-xl font-bold">Add Product</h1>
           <p className="text-sm text-gray-500">
-            You can edit product details from here.
+            You can add product details from here.
           </p>
         </div>
       </div>
@@ -179,7 +168,6 @@ const EditProduct = () => {
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
-              name="details"
               onChange={handleDetailsChange}
               rows={5}
               placeholder="Enter product details"
@@ -248,7 +236,7 @@ const EditProduct = () => {
             </div>
           </div>
           <div className="flex flex-col md:flex-row items-center gap-3">
-            <div className="w-full">
+            <div className="w-full md:w-[45%]">
               <Typography
                 variant="h6"
                 color="gray"
@@ -257,20 +245,25 @@ const EditProduct = () => {
                 Banner
               </Typography>
               <input
-                type="text"
-                placeholder="Enter banner url"
-                className="w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:border-primary focus:border-t-border-primary focus:outline-none"
-                value={banner}
-                name="banner"
-                onChange={handleBannerChange}
+                key={fileKey}
+                type="file"
+                onChange={handleImageChange}
+                className=""
               />
+              {uploadProgress > 0 && (
+                <div className="mt-3">
+                  <progress value={uploadProgress} max="100">
+                    {uploadProgress}%
+                  </progress>
+                </div>
+              )}
             </div>
           </div>
           <button
-            onClick={handleUpdate}
+            onClick={handleUpload}
             className="mt-5 bg-primary text-white px-4 py-2 rounded"
           >
-            Update
+            Upload
           </button>
         </div>
         {imagePreview && (
@@ -290,9 +283,7 @@ const EditProduct = () => {
                 <i className="fa-solid fa-xmark text-white"></i>
               </button>
               <img
-                src={
-                  imagePreview ? imagePreview : "https://placehold.co/1680x805"
-                }
+                src={imagePreview ? imagePreview : "/img/missing-image.jpg"}
                 alt="Selected"
                 className="max-w-full h-full md:w-full object-cover rounded-md"
               />
@@ -304,4 +295,4 @@ const EditProduct = () => {
   );
 };
 
-export default EditProduct;
+export default AddProduct;

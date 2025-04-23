@@ -5,6 +5,8 @@ import { toast } from "react-toastify";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import Invoice from "../components/Invoice";
 
+const API_URL = "https://lushoriam-server-abnd.vercel.app";
+
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -16,7 +18,12 @@ const Orders = () => {
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:8000/api/v1/orders");
+      const response = await fetch(`${API_URL}/api/v1/orders`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
       const data = await response.json();
       setOrders(data);
     } catch (error) {

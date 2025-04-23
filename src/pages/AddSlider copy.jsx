@@ -1,30 +1,30 @@
 import { Input, Textarea, Typography } from "@material-tailwind/react";
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const API_URL = "https://lushoriam-server-abnd.vercel.app";
-
-const EditSlider = () => {
-  const { id } = useParams();
+const AddSlider = () => {
   const navigate = useNavigate();
+  const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(
     "https://placehold.co/1680x805"
   );
   const [title, setTitle] = useState("");
   const [details, setDetails] = useState("");
-  const [banner, setBanner] = useState("");
+  const [fileKey, setFileKey] = useState(Date.now());
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB limit
 
-  useEffect(() => {
-    fetch(`${API_URL}/api/v1/sliders/${id}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setTitle(data?.title);
-        setDetails(data?.details);
-        setBanner(data?.banner);
-        setImagePreview(data?.banner);
-      });
-  }, [id, navigate]);
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.size > MAX_FILE_SIZE) {
+      alert("File size exceeds 50MB limit.");
+      setFileKey(Date.now());
+    } else {
+      setImage(file);
+      setImagePreview(URL.createObjectURL(file)); // Set the image preview
+    }
+  };
 
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
@@ -33,25 +33,16 @@ const EditSlider = () => {
     setDetails(e.target.value);
   };
 
-  const handleBannerChange = (e) => {
-    setBanner(e.target.value);
-    setImagePreview(e.target.value);
-  };
-
-  const handleUpdate = async () => {
-    const data = {
-      title,
-      details,
-      banner,
-    };
+  const handleUpload = async () => {
+    const formData = new FormData();
+    formData.append("banner", image);
+    formData.append("title", title);
+    formData.append("details", details);
 
     try {
-      const response = await fetch(`${API_URL}/api/v1/sliders/update/${id}`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "PUT",
-        body: JSON.stringify(data),
+      const response = await fetch("http://localhost:8000/api/v1/sliders/add", {
+        method: "POST",
+        body: formData,
       });
 
       if (!response.ok) {
@@ -61,7 +52,7 @@ const EditSlider = () => {
       const result = await response.json();
 
       // Show success toast
-      toast.success("Slider updated successfully", {
+      toast.success("Upload successful", {
         position: "top-right",
         hideProgressBar: false,
         autoClose: 1000,
@@ -76,15 +67,21 @@ const EditSlider = () => {
       navigate("/sliders");
 
       // Reset the form
+      setImage(null);
+      setImagePreview(null);
       setTitle("");
       setDetails("");
-      setBanner("");
+      setFileKey(Date.now());
+      setUploadProgress(0);
     } catch (error) {
       console.error("Error uploading file", error);
       // Reset the form in case of error
+      setImage(null);
+      setImagePreview(null);
       setTitle("");
       setDetails("");
-      setBanner("");
+      setFileKey(Date.now());
+      setUploadProgress(0);
     }
   };
 
@@ -105,9 +102,9 @@ const EditSlider = () => {
           <i className="fa-solid fa-hand-point-left"></i>
         </button>
         <div>
-          <h1 className="text-xl font-bold">Edit Slider</h1>
+          <h1 className="text-xl font-bold">Add Slider</h1>
           <p className="text-sm text-gray-500">
-            You can edit slider details from here.
+            You can add slider details from here.
           </p>
         </div>
       </div>
@@ -150,7 +147,7 @@ const EditSlider = () => {
             />
           </div>
           <div className="flex flex-col md:flex-row items-center gap-3">
-            <div className="w-full">
+            <div className="w-full md:w-[45%]">
               <Typography
                 variant="h6"
                 color="gray"
@@ -159,20 +156,25 @@ const EditSlider = () => {
                 Banner
               </Typography>
               <input
-                type="text"
-                placeholder="Enter banner url"
-                className="w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:border-primary focus:border-t-border-primary focus:outline-none"
-                value={banner}
-                name="banner"
-                onChange={handleBannerChange}
+                key={fileKey}
+                type="file"
+                onChange={handleImageChange}
+                className=""
               />
+              {uploadProgress > 0 && (
+                <div className="mt-3">
+                  <progress value={uploadProgress} max="100">
+                    {uploadProgress}%
+                  </progress>
+                </div>
+              )}
             </div>
           </div>
           <button
-            onClick={handleUpdate}
+            onClick={handleUpload}
             className="mt-5 bg-primary text-white px-4 py-2 rounded"
           >
-            Update
+            Upload
           </button>
         </div>
         {imagePreview && (
@@ -197,4 +199,4 @@ const EditSlider = () => {
   );
 };
 
-export default EditSlider;
+export default AddSlider;

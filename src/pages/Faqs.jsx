@@ -4,6 +4,8 @@ import Loader from "../loader/Loader";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import { toast } from "react-toastify";
 
+const API_URL = "https://lushoriam-server-abnd.vercel.app";
+
 const Faq = () => {
   // State variables
   const [faqs, setFaqs] = useState([]);
@@ -20,7 +22,7 @@ const Faq = () => {
   const fetchFaqs = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:8000/api/v1/faqs");
+      const response = await fetch(`${API_URL}/api/v1/faqs`);
       const data = await response.json();
       setFaqs(data);
     } catch (error) {

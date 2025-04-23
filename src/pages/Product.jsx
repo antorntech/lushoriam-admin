@@ -4,6 +4,8 @@ import Loader from "../loader/Loader";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import { toast } from "react-toastify";
 
+const API_URL = "https://lushoriam-server-abnd.vercel.app";
+
 const Product = () => {
   // State variables
   const [products, setProducts] = useState([]);
@@ -20,7 +22,12 @@ const Product = () => {
   const fetchProducts = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:8000/api/v1/products");
+      const response = await fetch(`${API_URL}/api/v1/products`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
       const data = await response.json();
       setProducts(data);
     } catch (error) {
@@ -48,7 +55,7 @@ const Product = () => {
     if (selectedItemId) {
       try {
         const response = await fetch(
-          `http://localhost:8000/api/v1/products/delete/${selectedItemId}`,
+          `${API_URL}/api/v1/products/delete/${selectedItemId}`,
           {
             method: "DELETE",
           }
@@ -76,7 +83,7 @@ const Product = () => {
   const handleStatusUpdate = async (updateId) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/v1/products/status/${updateId}`,
+        `${API_URL}/api/v1/products/status/${updateId}`,
         {
           method: "PATCH",
           headers: {
@@ -199,7 +206,8 @@ const Product = () => {
                     <tr key={product?._id} className="hover:bg-gray-100">
                       <td className="px-6 py-4 border-b">
                         <img
-                          src={`http://localhost:8000${product?.banner}`}
+                          // src={`http://localhost:8000${product?.banner}`}
+                          src={product?.banner}
                           alt={product?.title}
                           className="w-20 h-20 object-cover rounded"
                         />

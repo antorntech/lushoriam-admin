@@ -1,37 +1,35 @@
 import { Input, Textarea, Typography } from "@material-tailwind/react";
-import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const API_URL = "https://lushoriam-server-abnd.vercel.app";
-
-const EditReview = () => {
-  const { id } = useParams(); // Get the review ID from the URL
+const AddReview = () => {
   const navigate = useNavigate();
+  const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(
     "https://placehold.co/150x50"
   );
   const [name, setName] = useState("");
   const [designation, setDesignation] = useState("");
   const [comments, setComments] = useState("");
-  const [avatar, setAvatar] = useState("");
+  const [fileKey, setFileKey] = useState(Date.now());
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB limit
 
-  useEffect(() => {
-    fetch(`${API_URL}/api/v1/reviews/${id}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setName(data?.name);
-        setDesignation(data?.designation);
-        setComments(data?.comments);
-        setAvatar(data?.avatar);
-        setImagePreview(data?.avatar);
-      });
-  }, [id, navigate]);
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.size > MAX_FILE_SIZE) {
+      alert("File size exceeds 50MB limit.");
+      setFileKey(Date.now());
+    } else {
+      setImage(file);
+      setImagePreview(URL.createObjectURL(file)); // Set the image preview
+    }
+  };
 
   const handleNameChange = (e) => {
     setName(e.target.value);
   };
-
   const handleDesignationChange = (e) => {
     setDesignation(e.target.value);
   };
@@ -40,55 +38,51 @@ const EditReview = () => {
     setComments(e.target.value);
   };
 
-  const handleBannerChange = (e) => {
-    setAvatar(e.target.value);
-    setImagePreview(e.target.value);
-  };
+  const handleUpload = async () => {
+    const formData = new FormData();
+    formData.append("avatar", image);
+    formData.append("name", name);
+    formData.append("designation", designation);
+    formData.append("comments", comments);
 
-  const handleUpdate = () => {
-    const data = {
-      name,
-      designation,
-      comments,
-      avatar,
-    };
     try {
-      fetch(`${API_URL}/api/v1/reviews/update/${id}`, {
-        method: "PUT",
+      const response = await fetch("http://localhost:8000/api/v1/reviews/add", {
+        method: "POST",
         body: formData,
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          toast.success("Review updated successfully", {
-            position: "top-right",
-            hideProgressBar: false,
-            autoClose: 1000,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
+      });
 
-          navigate("/reviews");
+      if (!response.ok) {
+        throw new Error("Failed to upload file");
+      }
 
-          //  Reset the form
-          setName("");
-          setComments("");
-          setAvatar("");
-        });
-    } catch (error) {
-      console.error("Error updating review", error);
-      //  Reset the form
+      const result = await response.json();
+      // Navigate to the reviews page
+      navigate("/reviews");
+
+      // Reset the form
+      setImage(null);
+      setImagePreview(null);
       setName("");
       setComments("");
-      setAvatar("");
+      setFileKey(Date.now());
+      setUploadProgress(0);
+    } catch (error) {
+      console.error("Error uploading file", error);
+      // Reset the form in case of error
+      setImage(null);
+      setImagePreview(null);
+      setName("");
+      setComments("");
+      setFileKey(Date.now());
+      setUploadProgress(0);
     }
   };
 
   const clearPreview = () => {
-    setAvatar("");
+    setImage(null);
     setImagePreview("https://placehold.co/150x50");
+    setFileKey(Date.now());
+    setUploadProgress(0);
   };
 
   return (
@@ -101,9 +95,9 @@ const EditReview = () => {
           <i className="fa-solid fa-hand-point-left"></i>
         </button>
         <div>
-          <h1 className="text-xl font-bold">Edit Review</h1>
+          <h1 className="text-xl font-bold">Add Review</h1>
           <p className="text-sm text-gray-500">
-            You can edit review details from here.
+            You can add review details from here.
           </p>
         </div>
       </div>
@@ -181,21 +175,21 @@ const EditReview = () => {
               >
                 Logo
               </Typography>
-              <input
-                type="text"
-                placeholder="Enter avatar url"
-                className="w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:border-primary focus:border-t-border-primary focus:outline-none"
-                value={avatar}
-                name="avatar"
-                onChange={handleBannerChange}
-              />
+              <input key={fileKey} type="file" onChange={handleImageChange} />
+              {uploadProgress > 0 && (
+                <div className="mt-3">
+                  <progress value={uploadProgress} max="100">
+                    {uploadProgress}%
+                  </progress>
+                </div>
+              )}
             </div>
           </div>
           <button
-            onClick={handleUpdate}
+            onClick={handleUpload}
             className="mt-5 bg-primary text-white px-4 py-2 rounded"
           >
-            Update
+            Upload
           </button>
         </div>
         {imagePreview && (
@@ -218,4 +212,4 @@ const EditReview = () => {
   );
 };
 
-export default EditReview;
+export default AddReview;

@@ -3,29 +3,17 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
+const API_URL = "https://lushoriam-server-abnd.vercel.app";
+
 const AddProduct = () => {
   const navigate = useNavigate();
-  const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState("/img/missing-image.jpg");
   const [title, setTitle] = useState("");
   const [details, setDetails] = useState("");
   const [price, setPrice] = useState(0);
   const [quantity, setQuantity] = useState(0);
   const [category, setCategory] = useState("Beauty");
-  const [fileKey, setFileKey] = useState(Date.now());
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB limit
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file && file.size > MAX_FILE_SIZE) {
-      alert("File size exceeds 50MB limit.");
-      setFileKey(Date.now());
-    } else {
-      setImage(file);
-      setImagePreview(URL.createObjectURL(file)); // Set the image preview
-    }
-  };
+  const [banner, setBanner] = useState("");
 
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
@@ -43,25 +31,29 @@ const AddProduct = () => {
   const handleCategoryChange = (e) => {
     setCategory(e.target.value);
   };
+  const handleBannerChange = (e) => {
+    setBanner(e.target.value);
+    setImagePreview(e.target.value);
+  };
 
   const handleUpload = async () => {
-    const formData = new FormData();
-    formData.append("banner", image);
-    formData.append("title", title);
-    formData.append("details", details);
-    formData.append("price", price);
-    formData.append("quantity", quantity);
-    formData.append("category", category);
-    formData.append("status", "Pending");
+    const data = {
+      title,
+      details,
+      price,
+      quantity,
+      category,
+      banner,
+    };
 
     try {
-      const response = await fetch(
-        "http://localhost:8000/api/v1/products/add",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+      const response = await fetch(`${API_URL}/api/v1/products/add`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify(data),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to upload file");
@@ -85,29 +77,27 @@ const AddProduct = () => {
       navigate("/products");
 
       // Reset the form
-      setImage(null);
-      setImagePreview(null);
       setTitle("");
       setDetails("");
-      setFileKey(Date.now());
-      setUploadProgress(0);
+      setPrice(0);
+      setQuantity(0);
+      setCategory("Beauty");
+      setBanner("");
     } catch (error) {
       console.error("Error uploading file", error);
       // Reset the form in case of error
-      setImage(null);
-      setImagePreview(null);
       setTitle("");
       setDetails("");
-      setFileKey(Date.now());
-      setUploadProgress(0);
+      setPrice(0);
+      setQuantity(0);
+      setCategory("Beauty");
+      setBanner("");
     }
   };
 
   const clearPreview = () => {
-    setImage(null);
+    setBanner("");
     setImagePreview("/img/missing-image.jpg");
-    setFileKey(Date.now());
-    setUploadProgress(0);
   };
 
   const categories = [
@@ -227,8 +217,8 @@ const AddProduct = () => {
                 <option value="" disabled>
                   Select a category
                 </option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
+                {categories.map((category, index) => (
+                  <option key={index} value={category}>
                     {category}
                   </option>
                 ))}
@@ -236,7 +226,7 @@ const AddProduct = () => {
             </div>
           </div>
           <div className="flex flex-col md:flex-row items-center gap-3">
-            <div className="w-full md:w-[45%]">
+            <div className="w-full">
               <Typography
                 variant="h6"
                 color="gray"
@@ -245,18 +235,13 @@ const AddProduct = () => {
                 Banner
               </Typography>
               <input
-                key={fileKey}
-                type="file"
-                onChange={handleImageChange}
-                className=""
+                type="text"
+                placeholder="Enter banner url"
+                className="w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:border-primary focus:border-t-border-primary focus:outline-none"
+                value={banner}
+                name="banner"
+                onChange={handleBannerChange}
               />
-              {uploadProgress > 0 && (
-                <div className="mt-3">
-                  <progress value={uploadProgress} max="100">
-                    {uploadProgress}%
-                  </progress>
-                </div>
-              )}
             </div>
           </div>
           <button

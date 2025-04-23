@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
+const API_URL = "https://lushoriam-server-abnd.vercel.app";
+
 const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -48,7 +50,7 @@ const Login = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/api/v1/admin/login", {
+      const response = await fetch(`${API_URL}/api/v1/admin/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -65,6 +67,7 @@ const Login = () => {
         }, 1000);
       } else {
         toast.error(data.message || "Login failed");
+        setFormData({ email: "", password: "" });
       }
     } catch (error) {
       toast.error("Something went wrong. Please try again.");

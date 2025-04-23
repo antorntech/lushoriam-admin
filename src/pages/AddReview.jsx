@@ -3,29 +3,17 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
+const API_URL = "https://lushoriam-server-abnd.vercel.app";
+
 const AddReview = () => {
   const navigate = useNavigate();
-  const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(
     "https://placehold.co/150x50"
   );
   const [name, setName] = useState("");
   const [designation, setDesignation] = useState("");
   const [comments, setComments] = useState("");
-  const [fileKey, setFileKey] = useState(Date.now());
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB limit
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file && file.size > MAX_FILE_SIZE) {
-      alert("File size exceeds 50MB limit.");
-      setFileKey(Date.now());
-    } else {
-      setImage(file);
-      setImagePreview(URL.createObjectURL(file)); // Set the image preview
-    }
-  };
+  const [avatar, setAvatar] = useState("");
 
   const handleNameChange = (e) => {
     setName(e.target.value);
@@ -38,17 +26,25 @@ const AddReview = () => {
     setComments(e.target.value);
   };
 
-  const handleUpload = async () => {
-    const formData = new FormData();
-    formData.append("avatar", image);
-    formData.append("name", name);
-    formData.append("designation", designation);
-    formData.append("comments", comments);
+  const handleAvatarChange = (e) => {
+    setAvatar(e.target.value);
+    setImagePreview(e.target.value);
+  };
 
+  const handleUpload = async () => {
+    const data = {
+      name,
+      designation,
+      comments,
+      avatar,
+    };
     try {
-      const response = await fetch("http://localhost:8000/api/v1/reviews/add", {
+      const response = await fetch(`${API_URL}/api/v1/reviews/add`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
         method: "POST",
-        body: formData,
+        body: JSON.stringify(data),
       });
 
       if (!response.ok) {
@@ -60,29 +56,21 @@ const AddReview = () => {
       navigate("/reviews");
 
       // Reset the form
-      setImage(null);
-      setImagePreview(null);
       setName("");
       setComments("");
-      setFileKey(Date.now());
-      setUploadProgress(0);
+      setAvatar("");
     } catch (error) {
       console.error("Error uploading file", error);
       // Reset the form in case of error
-      setImage(null);
-      setImagePreview(null);
       setName("");
       setComments("");
-      setFileKey(Date.now());
-      setUploadProgress(0);
+      setAvatar("");
     }
   };
 
   const clearPreview = () => {
-    setImage(null);
+    setAvatar("");
     setImagePreview("https://placehold.co/150x50");
-    setFileKey(Date.now());
-    setUploadProgress(0);
   };
 
   return (
@@ -148,11 +136,7 @@ const AddReview = () => {
             </div>
           </div>
           <div>
-            <Typography
-              variant="h6"
-              color="gray"
-              className="mb-1 font-normal mt-2"
-            >
+            <Typography variant="h6" color="gray" className="mb-1 font-normal">
               Comments
             </Typography>
             <Textarea
@@ -173,16 +157,16 @@ const AddReview = () => {
                 color="gray"
                 className="mb-1 font-normal mt-2"
               >
-                Logo
+                Avatar
               </Typography>
-              <input key={fileKey} type="file" onChange={handleImageChange} />
-              {uploadProgress > 0 && (
-                <div className="mt-3">
-                  <progress value={uploadProgress} max="100">
-                    {uploadProgress}%
-                  </progress>
-                </div>
-              )}
+              <input
+                type="text"
+                placeholder="Enter avatar url"
+                className="w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:border-primary focus:border-t-border-primary focus:outline-none"
+                value={avatar}
+                name="avatar"
+                onChange={handleAvatarChange}
+              />
             </div>
           </div>
           <button

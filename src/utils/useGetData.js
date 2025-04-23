@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const mainURL = "http://localhost:8000/api/v1/";
+const mainURL = "https://lushoriam-server-abnd.vercel.app/api/v1/";
 
 const useGetData = (url) => {
   const [data, setData] = useState(null);
@@ -8,7 +8,12 @@ const useGetData = (url) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(mainURL + url);
+        const response = await fetch(mainURL + url, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
         const data = await response.json();
         setData(data);
       } catch (error) {
