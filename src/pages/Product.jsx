@@ -282,7 +282,8 @@ const Product = () => {
                 >
                   {/* Product Image */}
                   <img
-                    src={`http://localhost:8000${product?.banner}`}
+                    src={product?.banner}
+                    // src={`http://localhost:8000${product?.banner}`}
                     alt={product?.title}
                     className="w-full h-full md:h-[250px] object-cover rounded"
                   />
