@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import Invoice from "../components/Invoice";
+import Loader from "../loader/Loader";
 
 const API_URL = "https://lushoriam-server-abnd.vercel.app";
 
@@ -207,9 +208,7 @@ const Orders = () => {
           </div>
         ) : (
           // No data message
-          <div className="text-center text-gray-500 text-lg font-semibold mt-5">
-            No orders found.
-          </div>
+          <Loader />
         )
       }
     </div>
