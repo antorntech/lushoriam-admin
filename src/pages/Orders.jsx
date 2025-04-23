@@ -100,19 +100,31 @@ const Orders = () => {
             <table className="min-w-full bg-white border border-gray-300">
               <thead>
                 <tr className="bg-gray-100 text-gray-700">
-                  <th className="px-4 py-2 border">Order ID</th>
-                  <th className="px-4 py-2 border">Customer</th>
-                  <th className="px-4 py-2 border">Address</th>
-                  <th className="px-4 py-2 border">Mobile</th>
-                  <th className="px-4 py-2 border">Product</th>
-                  <th className="px-4 py-2 border">Quantity</th>
-                  <th className="px-4 py-2 border">Delivery</th>
+                  <th className="px-4 py-2 border whitespace-nowrap">
+                    Order ID
+                  </th>
+                  <th className="px-4 py-2 border whitespace-nowrap">
+                    Customer
+                  </th>
+                  <th className="px-4 py-2 border whitespace-nowrap">
+                    Address
+                  </th>
+                  <th className="px-4 py-2 border whitespace-nowrap">Mobile</th>
+                  <th className="px-4 py-2 border whitespace-nowrap">
+                    Product
+                  </th>
+                  <th className="px-4 py-2 border whitespace-nowrap">
+                    Quantity
+                  </th>
+                  <th className="px-4 py-2 border whitespace-nowrap">
+                    Delivery
+                  </th>
                   <th className="px-4 py-2 border whitespace-nowrap">
                     Total Price (৳)
                   </th>
-                  <th className="px-4 py-2 border">Status</th>
-                  <th className="px-4 py-2 border">Action</th>
-                  <th className="px-4 py-2 border">Print</th>
+                  <th className="px-4 py-2 border whitespace-nowrap">Status</th>
+                  <th className="px-4 py-2 border whitespace-nowrap">Action</th>
+                  <th className="px-4 py-2 border whitespace-nowrap">Print</th>
                 </tr>
               </thead>
               <tbody>
