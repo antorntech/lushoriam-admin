@@ -1,10 +1,15 @@
-import { faArrowsRotate, faPrint } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowsRotate,
+  faFileArrowDown,
+  faPrint,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import Invoice from "../components/Invoice";
 import Loader from "../loader/Loader";
+import ReadyToParcel from "../components/ReadyToParcel";
 
 const API_URL = "https://lushoriam-server-abnd.vercel.app";
 
@@ -41,7 +46,10 @@ const Orders = () => {
         `http://localhost:8000/api/v1/orders/${orderId}`,
         {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
           body: JSON.stringify({ productId, status: newStatus }),
         }
       );
@@ -78,7 +86,30 @@ const Orders = () => {
               : "Orders are not available here."}
           </p>
         </div>
-        <div>
+        <div className="flex items-center gap-2">
+          {orders && orders.length > 0 && (
+            <button className="px-4 py-2 bg-green-500 rounded">
+              <PDFDownloadLink
+                document={<ReadyToParcel readyOrders={orders} />}
+                fileName={`readytoparcel.pdf`}
+              >
+                {({ loading }) =>
+                  loading ? (
+                    <span className="text-white font-medium">Loading...</span>
+                  ) : (
+                    <span className="text-white">
+                      Ready To Parcel
+                      <FontAwesomeIcon
+                        icon={faPrint}
+                        className="ml-2 text-xl text-white"
+                      />
+                    </span>
+                  )
+                }
+              </PDFDownloadLink>
+            </button>
+          )}
+
           <button
             onClick={fetchOrders}
             className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center"
