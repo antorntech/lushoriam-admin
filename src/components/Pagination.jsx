@@ -1,3 +1,8 @@
+import {
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
@@ -19,8 +24,13 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       <button
         disabled={currentPage === 1}
         onClick={() => onPageChange(currentPage - 1)}
+        className={
+          currentPage === 1
+            ? "bg-gray-400 px-1.5 py-1 text-gray-500 rounded"
+            : "bg-primary px-1.5 py-1 rounded text-white"
+        }
       >
-        Prev
+        <FontAwesomeIcon icon={faChevronLeft} className="size-4" />
       </button>
 
       {pages.map((page) => (
@@ -38,8 +48,13 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       <button
         disabled={currentPage === totalPages}
         onClick={() => onPageChange(currentPage + 1)}
+        className={
+          currentPage === totalPages
+            ? "bg-gray-400 px-1.5 py-1 text-gray-500 rounded"
+            : "bg-primary px-1.5 py-1 rounded text-white"
+        }
       >
-        Next
+        <FontAwesomeIcon icon={faChevronRight} className="size-4" />
       </button>
     </div>
   );
