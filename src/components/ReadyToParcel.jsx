@@ -53,22 +53,27 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   lastRow: {
-    borderBottomWidth: 0, // no bottom border for last row
+    borderBottomWidth: 0,
   },
   label: {
     width: "35%",
     fontWeight: "bold",
     color: "#000",
+    borderRightWidth: 1,
+    borderRightColor: "#ccc",
+    paddingRight: 8,
   },
   value: {
     width: "65%",
     color: "#333",
+    paddingLeft: 8,
   },
   footer: {
     marginTop: 30,
     textAlign: "center",
     fontSize: 10,
     color: "#777",
+    fontWeight: "bold",
   },
 });
 
