@@ -16,6 +16,7 @@ const API_URL = "https://lushoriam-server-abnd.vercel.app";
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
+  const date = new Date().toLocaleDateString();
 
   useEffect(() => {
     fetchOrders();
@@ -91,7 +92,7 @@ const Orders = () => {
             <button className="px-4 py-2 bg-green-500 rounded">
               <PDFDownloadLink
                 document={<ReadyToParcel readyOrders={orders} />}
-                fileName={`readytoparcel.pdf`}
+                fileName={`readytoparcel-${date}.pdf`}
               >
                 {({ loading }) =>
                   loading ? (
