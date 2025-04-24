@@ -183,6 +183,9 @@ const Expenses = () => {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [selectedItemId, setSelectedItemId] = useState(null);
+  const [antorExpenses, setAntorExpenses] = useState([]);
+  const [rakibExpenses, setRakibExpenses] = useState([]);
+  const [hridoyExpenses, setHridoyExpenses] = useState([]);
 
   const fetchExpense = async () => {
     try {
@@ -203,6 +206,21 @@ const Expenses = () => {
   useEffect(() => {
     fetchExpense();
   }, []);
+
+  useEffect(() => {
+    const antorExpenses = expenses?.filter(
+      (expense) => expense?.name === "Antor"
+    );
+    const rakibExpenses = expenses?.filter(
+      (expense) => expense?.name === "Rakib"
+    );
+    const hridoyExpenses = expenses?.filter(
+      (expense) => expense?.name === "Hridoy"
+    );
+    setAntorExpenses(antorExpenses);
+    setRakibExpenses(rakibExpenses);
+    setHridoyExpenses(hridoyExpenses);
+  }, [expenses]);
 
   const handleCloseModal = () => {
     setIsOpen(false);
@@ -255,7 +273,17 @@ const Expenses = () => {
     <>
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2">
         <div>
-          <h1 className="text-xl font-bold">Expenses</h1>
+          <div>
+            <h1 className="text-xl font-bold">Expenses</h1>
+            <p className="text-lg font-semibold">
+              (Total: {""}
+              {expenses?.reduce(
+                (sum, item) => sum + Number(item.amount || 0),
+                0
+              )}{" "}
+              BDT)
+            </p>
+          </div>
           <p>
             {expenses?.length > 0
               ? "Expenses are available"
@@ -275,59 +303,220 @@ const Expenses = () => {
         </div>
       </div>
 
-      <div className="mt-5 overflow-x-auto">
-        <table className="min-w-full bg-white border">
-          <thead>
-            <tr>
-              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Name
-              </th>
-              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Amount
-              </th>
-              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Description
-              </th>
-              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Date
-              </th>
-              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {expenses?.map((expense, index) => (
-              <tr key={index} className="hover:bg-gray-100">
-                <td className="px-6 py-4 border-b">{expense?.name}</td>
-                <td className="px-6 py-4 border-b">{expense?.amount}</td>
-                <td className="px-6 py-4 border-b">
-                  {expense?.description?.slice(0, 50)}...
-                </td>
-                <td className="px-6 py-4 border-b">{expense?.date}</td>
-                <td className="px-6 py-4 border-b">
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => {
-                        setSelectedExpense(expense);
-                        setIsOpen(true);
-                      }}
-                      className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-300"
-                    >
-                      <FontAwesomeIcon icon={faEdit} />
-                    </button>
-                    <button
-                      onClick={() => openDeleteConfirmModal(expense._id)}
-                      className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-300"
-                    >
-                      <FontAwesomeIcon icon={faTrash} />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <h1 className="text-lg font-bold">Expenses of Antor</h1>
+          <div className="mt-2 overflow-x-auto">
+            <table className="min-w-full bg-white border">
+              <thead>
+                <tr>
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                    Name
+                  </th>
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                    Amount
+                  </th>
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                    Description
+                  </th>
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                    Date
+                  </th>
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {antorExpenses?.map((expense, index) => (
+                  <tr key={index} className="hover:bg-gray-100">
+                    <td className="px-6 py-4 border-b">{expense?.name}</td>
+                    <td className="px-6 py-4 border-b">{expense?.amount}</td>
+                    <td className="px-6 py-4 border-b">
+                      {expense?.description?.slice(0, 50)}...
+                    </td>
+                    <td className="px-6 py-4 border-b">{expense?.date}</td>
+                    <td className="px-6 py-4 border-b">
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => {
+                            setSelectedExpense(expense);
+                            setIsOpen(true);
+                          }}
+                          className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-300"
+                        >
+                          <FontAwesomeIcon icon={faEdit} />
+                        </button>
+                        <button
+                          onClick={() => openDeleteConfirmModal(expense._id)}
+                          className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-300"
+                        >
+                          <FontAwesomeIcon icon={faTrash} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+
+                {/* Subtotal Row */}
+                <tr className="bg-gray-200 font-semibold">
+                  <td className="px-6 py-4 border-t" colSpan={1}>
+                    Subtotal
+                  </td>
+                  <td className="px-6 py-4 border-t">
+                    {antorExpenses?.reduce(
+                      (sum, item) => sum + Number(item.amount || 0),
+                      0
+                    )}
+                  </td>
+                  <td className="px-6 py-4 border-t" colSpan={3}></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <h1 className="text-lg font-bold">Expenses of Rakib</h1>
+          <div className="mt-2 overflow-x-auto">
+            <table className="min-w-full bg-white border">
+              <thead>
+                <tr>
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                    Name
+                  </th>
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                    Amount
+                  </th>
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                    Description
+                  </th>
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                    Date
+                  </th>
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {rakibExpenses?.map((expense, index) => (
+                  <tr key={index} className="hover:bg-gray-100">
+                    <td className="px-6 py-4 border-b">{expense?.name}</td>
+                    <td className="px-6 py-4 border-b">{expense?.amount}</td>
+                    <td className="px-6 py-4 border-b">
+                      {expense?.description?.slice(0, 50)}...
+                    </td>
+                    <td className="px-6 py-4 border-b">{expense?.date}</td>
+                    <td className="px-6 py-4 border-b">
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => {
+                            setSelectedExpense(expense);
+                            setIsOpen(true);
+                          }}
+                          className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-300"
+                        >
+                          <FontAwesomeIcon icon={faEdit} />
+                        </button>
+                        <button
+                          onClick={() => openDeleteConfirmModal(expense._id)}
+                          className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-300"
+                        >
+                          <FontAwesomeIcon icon={faTrash} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+
+                {/* Subtotal Row */}
+                <tr className="bg-gray-200 font-semibold">
+                  <td className="px-6 py-4 border-t" colSpan={1}>
+                    Subtotal
+                  </td>
+                  <td className="px-6 py-4 border-t">
+                    {rakibExpenses?.reduce(
+                      (sum, item) => sum + Number(item.amount || 0),
+                      0
+                    )}
+                  </td>
+                  <td className="px-6 py-4 border-t" colSpan={3}></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <h1 className="text-lg font-bold">Expenses of Hridoy</h1>
+          <div className="mt-2 overflow-x-auto">
+            <table className="min-w-full bg-white border">
+              <thead>
+                <tr>
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                    Name
+                  </th>
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                    Amount
+                  </th>
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                    Description
+                  </th>
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                    Date
+                  </th>
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {hridoyExpenses?.map((expense, index) => (
+                  <tr key={index} className="hover:bg-gray-100">
+                    <td className="px-6 py-4 border-b">{expense?.name}</td>
+                    <td className="px-6 py-4 border-b">{expense?.amount}</td>
+                    <td className="px-6 py-4 border-b">
+                      {expense?.description?.slice(0, 50)}...
+                    </td>
+                    <td className="px-6 py-4 border-b">{expense?.date}</td>
+                    <td className="px-6 py-4 border-b">
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => {
+                            setSelectedExpense(expense);
+                            setIsOpen(true);
+                          }}
+                          className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-300"
+                        >
+                          <FontAwesomeIcon icon={faEdit} />
+                        </button>
+                        <button
+                          onClick={() => openDeleteConfirmModal(expense._id)}
+                          className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-300"
+                        >
+                          <FontAwesomeIcon icon={faTrash} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+
+                {/* Subtotal Row */}
+                <tr className="bg-gray-200 font-semibold">
+                  <td className="px-6 py-4 border-t" colSpan={1}>
+                    Subtotal
+                  </td>
+                  <td className="px-6 py-4 border-t">
+                    {hridoyExpenses?.reduce(
+                      (sum, item) => sum + Number(item.amount || 0),
+                      0
+                    )}
+                  </td>
+                  <td className="px-6 py-4 border-t" colSpan={3}></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       <ExpenseModal
