@@ -80,11 +80,7 @@ const Login = () => {
       style={{ backgroundImage: "url('/img/login-bg.jpg')" }}
     >
       <div className="w-full md:max-w-[700px] p-6 flex items-center justify-center rounded-md login-blur">
-        <Card
-          color="transparent"
-          shadow={false}
-          className="p-6 w-full max-w-md"
-        >
+        <div className="md:p-6 w-full md:max-w-md">
           <img
             src="/img/logo.svg"
             alt="Logo"
@@ -94,7 +90,7 @@ const Login = () => {
           <p className="mb-5 text-center text-gray-900">
             Nice to meet you! Enter your details to login.
           </p>
-          <form onSubmit={handleLogin} className="w-full mx-auto px-5">
+          <form onSubmit={handleLogin} className="w-full mx-auto md:px-5">
             {Object.keys(formData).map((field) => (
               <div key={field} className="mb-4">
                 <p className="mb-1 font-normal text-gray-400">
@@ -131,7 +127,7 @@ const Login = () => {
               ></lord-icon>
             </Button>
           </form>
-        </Card>
+        </div>
       </div>
     </div>
   );
