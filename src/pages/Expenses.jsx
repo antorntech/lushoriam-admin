@@ -2,6 +2,7 @@ import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
+import { toast } from "react-toastify";
 
 const API_URL = "https://lushoriam-server-abnd.vercel.app";
 
@@ -86,7 +87,11 @@ const ExpenseModal = ({ isOpen, onClose, onAddOrUpdate, selectedExpense }) => {
       const data = await response.json();
       onAddOrUpdate();
       onClose();
-      console.log(data);
+
+      formData.name = "";
+      formData.amount = "";
+      formData.description = "";
+      formData.date = "";
     } catch (error) {
       console.log(error);
     }
@@ -177,6 +182,7 @@ const Expenses = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState(null);
+  const [selectedItemId, setSelectedItemId] = useState(null);
 
   const fetchExpense = async () => {
     try {
@@ -188,6 +194,7 @@ const Expenses = () => {
       });
       const data = await response.json();
       setExpenses(data);
+      console.log(data);
     } catch (error) {
       console.log("Error fetching expenses:", error);
     }
@@ -218,11 +225,17 @@ const Expenses = () => {
         const response = await fetch(
           `${API_URL}/api/v1/expenses/delete/${selectedItemId}`,
           {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
             method: "DELETE",
           }
         );
-        if (response.ok) {
-          toast.success("Review deleted successfully", {
+        if (!response.ok) {
+          toast.error("Failed to delete review");
+        } else {
+          toast.success("Expense deleted successfully", {
             autoClose: 2000,
             hideProgressBar: true,
             closeOnClick: true,
@@ -230,9 +243,7 @@ const Expenses = () => {
             draggable: true,
             progress: undefined,
           });
-          fetchReviews(); // Refresh review list
-        } else {
-          toast.error("Failed to delete review");
+          fetchExpense();
         }
       } catch (error) {
         toast.error("An error occurred while deleting the review");
@@ -293,9 +304,7 @@ const Expenses = () => {
                 <td className="px-6 py-4 border-b">
                   {expense?.description?.slice(0, 50)}...
                 </td>
-                <td className="px-6 py-4 border-b">
-                  {new Date(expense?.date).toLocaleDateString()}
-                </td>
+                <td className="px-6 py-4 border-b">{expense?.date}</td>
                 <td className="px-6 py-4 border-b">
                   <div className="flex gap-2">
                     <button
