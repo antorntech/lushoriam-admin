@@ -153,8 +153,8 @@ const Reviews = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentItems.map((review) => (
-                    <tr key={review.id} className="hover:bg-gray-100">
+                  {currentItems?.map((review, index) => (
+                    <tr key={index} className="hover:bg-gray-100">
                       <td className="px-6 py-4 border-b">
                         <img
                           src={review?.avatar}

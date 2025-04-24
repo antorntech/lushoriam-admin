@@ -32,6 +32,11 @@ const menuItems = [
     link: "/reviews",
     icon: "/img/icons/review",
   },
+  {
+    title: "Expenses",
+    link: "/expenses",
+    icon: "/img/icons/expenses",
+  },
 ];
 
 const Sidenav = () => {
