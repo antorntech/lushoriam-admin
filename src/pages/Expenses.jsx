@@ -332,8 +332,13 @@ const Expenses = () => {
                   <tr key={index} className="hover:bg-gray-100">
                     <td className="px-6 py-4 border-b">{expense?.name}</td>
                     <td className="px-6 py-4 border-b">{expense?.amount}</td>
-                    <td className="px-6 py-4 border-b">
-                      {expense?.description?.slice(0, 50)}...
+                    <td
+                      className="px-6 py-4 border-b"
+                      title={expense?.description}
+                    >
+                      {expense?.description?.length > 20
+                        ? `${expense.description.slice(0, 20)}...`
+                        : expense.description}
                     </td>
                     <td className="px-6 py-4 border-b">{expense?.date}</td>
                     <td className="px-6 py-4 border-b">
@@ -404,8 +409,13 @@ const Expenses = () => {
                   <tr key={index} className="hover:bg-gray-100">
                     <td className="px-6 py-4 border-b">{expense?.name}</td>
                     <td className="px-6 py-4 border-b">{expense?.amount}</td>
-                    <td className="px-6 py-4 border-b">
-                      {expense?.description?.slice(0, 50)}...
+                    <td
+                      className="px-6 py-4 border-b"
+                      title={expense?.description}
+                    >
+                      {expense?.description?.length > 20
+                        ? `${expense.description.slice(0, 20)}...`
+                        : expense.description}
                     </td>
                     <td className="px-6 py-4 border-b">{expense?.date}</td>
                     <td className="px-6 py-4 border-b">
@@ -476,8 +486,13 @@ const Expenses = () => {
                   <tr key={index} className="hover:bg-gray-100">
                     <td className="px-6 py-4 border-b">{expense?.name}</td>
                     <td className="px-6 py-4 border-b">{expense?.amount}</td>
-                    <td className="px-6 py-4 border-b">
-                      {expense?.description?.slice(0, 50)}...
+                    <td
+                      className="px-6 py-4 border-b"
+                      title={expense?.description}
+                    >
+                      {expense?.description?.length > 20
+                        ? `${expense.description.slice(0, 20)}...`
+                        : expense.description}
                     </td>
                     <td className="px-6 py-4 border-b">{expense?.date}</td>
                     <td className="px-6 py-4 border-b">
