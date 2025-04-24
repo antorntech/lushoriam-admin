@@ -124,7 +124,7 @@ const ExpenseModal = ({ isOpen, onClose, onAddOrUpdate, selectedExpense }) => {
             </select>
           </div>
           <div>
-            <label className="block mb-1 font-medium">Amount</label>
+            <label className="block mb-1 font-medium">Amount (TK)</label>
             <input
               type="number"
               name="amount"
@@ -314,7 +314,7 @@ const Expenses = () => {
                     Name
                   </th>
                   <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Amount
+                    Amount (TK)
                   </th>
                   <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                     Description
@@ -367,7 +367,8 @@ const Expenses = () => {
                     {antorExpenses?.reduce(
                       (sum, item) => sum + Number(item.amount || 0),
                       0
-                    )}
+                    )}{" "}
+                    TK
                   </td>
                   <td className="px-6 py-4 border-t" colSpan={3}></td>
                 </tr>
@@ -385,7 +386,7 @@ const Expenses = () => {
                     Name
                   </th>
                   <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Amount
+                    Amount (TK)
                   </th>
                   <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                     Description
@@ -439,6 +440,7 @@ const Expenses = () => {
                       (sum, item) => sum + Number(item.amount || 0),
                       0
                     )}
+                    TK
                   </td>
                   <td className="px-6 py-4 border-t" colSpan={3}></td>
                 </tr>
@@ -456,7 +458,7 @@ const Expenses = () => {
                     Name
                   </th>
                   <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Amount
+                    Amount (TK)
                   </th>
                   <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                     Description
@@ -510,6 +512,7 @@ const Expenses = () => {
                       (sum, item) => sum + Number(item.amount || 0),
                       0
                     )}
+                    TK
                   </td>
                   <td className="px-6 py-4 border-t" colSpan={3}></td>
                 </tr>
