@@ -86,7 +86,13 @@ const ExpenseModal = ({ isOpen, onClose, onAddOrUpdate, selectedExpense }) => {
       });
 
       const data = await response.json();
-      onAddOrUpdate();
+
+      if (!response.ok) {
+        throw new Error(data.message);
+      } else {
+        toast.success(data.message, { autoClose: 1000 });
+      }
+      onAddOrUpdate(formData?.name);
       onClose();
 
       formData.name = "";
