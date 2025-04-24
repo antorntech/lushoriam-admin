@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import { toast } from "react-toastify";
+import Pagination from "../components/Pagination";
 
 const API_URL = "https://lushoriam-server-abnd.vercel.app";
 
@@ -177,66 +178,164 @@ const ExpenseModal = ({ isOpen, onClose, onAddOrUpdate, selectedExpense }) => {
   );
 };
 
+const ExpenseTable = ({
+  title,
+  expenses,
+  subTotal,
+  onEdit,
+  onDelete,
+  currentPage,
+  totalPages,
+  onPageChange,
+}) => {
+  return (
+    <div>
+      <h1 className="text-lg font-bold">{title}</h1>
+      <div className="mt-2 overflow-x-auto">
+        <table className="min-w-full bg-white border">
+          <thead>
+            <tr>
+              {["SL", "Amount (TK)", "Description", "Date", "Actions"].map(
+                (th, i) => (
+                  <th
+                    key={i}
+                    className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap"
+                  >
+                    {th}
+                  </th>
+                )
+              )}
+            </tr>
+          </thead>
+          <tbody>
+            {expenses?.map((expense, index) => (
+              <tr key={index} className="hover:bg-gray-100">
+                <td className="px-6 py-4 border-b">{index + 1}</td>
+                <td className="px-6 py-4 border-b">{expense?.amount}</td>
+                <td className="px-6 py-4 border-b" title={expense?.description}>
+                  {expense?.description?.length > 20
+                    ? `${expense.description.slice(0, 20)}...`
+                    : expense.description}
+                </td>
+                <td className="px-6 py-4 border-b">{expense?.date}</td>
+                <td className="px-6 py-4 border-b">
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => onEdit(expense)}
+                      className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-300"
+                    >
+                      <FontAwesomeIcon icon={faEdit} />
+                    </button>
+                    <button
+                      onClick={() => onDelete(expense._id)}
+                      className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-300"
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+
+            <tr className="bg-gray-200 font-semibold">
+              <td className="px-6 py-4 border-t">Subtotal</td>
+              <td className="px-6 py-4 border-t">{subTotal} TK</td>
+              <td className="px-6 py-4 border-t" colSpan={3}></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      {/* Pagination */}
+      <div className="mt-4">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={onPageChange}
+        />
+      </div>
+    </div>
+  );
+};
+
 const Expenses = () => {
+  const limit = 5;
   const [expenses, setExpenses] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [selectedItemId, setSelectedItemId] = useState(null);
+
+  // Separate state for expenses of each category
   const [antorExpenses, setAntorExpenses] = useState([]);
   const [rakibExpenses, setRakibExpenses] = useState([]);
   const [hridoyExpenses, setHridoyExpenses] = useState([]);
 
-  const fetchExpense = async () => {
+  const [antorSubTotal, setAntorSubTotal] = useState(0);
+  const [rakibSubTotal, setRakibSubTotal] = useState(0);
+  const [hridoySubTotal, setHridoySubTotal] = useState(0);
+
+  // Separate pagination states for each category
+  const [antorPage, setAntorPage] = useState(1);
+  const [rakibPage, setRakibPage] = useState(1);
+  const [hridoyPage, setHridoyPage] = useState(1);
+
+  // Separate total pages for each category
+  const [antorTotalPages, setAntorTotalPages] = useState(1);
+  const [rakibTotalPages, setRakibTotalPages] = useState(1);
+  const [hridoyTotalPages, setHridoyTotalPages] = useState(1);
+
+  const [totalExpenses, setTotalExpenses] = useState(0);
+
+  const fetchExpense = async (category, page = 1) => {
     try {
-      const response = await fetch(`${API_URL}/api/v1/expenses`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
+      const response = await fetch(
+        `${API_URL}/api/v1/expenses?category=${category}&page=${page}&limit=${limit}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
       const data = await response.json();
-      setExpenses(data);
-      console.log(data);
+
+      if (category === "Antor") {
+        setAntorExpenses(data?.expenses);
+        setAntorSubTotal(data?.totalCatExpenseAmount);
+        setAntorTotalPages(Math.ceil(data?.total / limit));
+      } else if (category === "Rakib") {
+        setRakibExpenses(data?.expenses);
+        setRakibSubTotal(data?.totalCatExpenseAmount);
+        setRakibTotalPages(Math.ceil(data?.total / limit));
+      } else if (category === "Hridoy") {
+        setHridoyExpenses(data?.expenses);
+        setHridoySubTotal(data?.totalCatExpenseAmount);
+        setHridoyTotalPages(Math.ceil(data?.total / limit));
+      }
+      setTotalExpenses(data?.totalExpenseAmount); // Total expenses across all categories
     } catch (error) {
       console.log("Error fetching expenses:", error);
     }
   };
 
   useEffect(() => {
-    fetchExpense();
-  }, []);
-
-  useEffect(() => {
-    const antorExpenses = expenses?.filter(
-      (expense) => expense?.name === "Antor"
-    );
-    const rakibExpenses = expenses?.filter(
-      (expense) => expense?.name === "Rakib"
-    );
-    const hridoyExpenses = expenses?.filter(
-      (expense) => expense?.name === "Hridoy"
-    );
-    setAntorExpenses(antorExpenses);
-    setRakibExpenses(rakibExpenses);
-    setHridoyExpenses(hridoyExpenses);
-  }, [expenses]);
+    fetchExpense("Antor", antorPage);
+    fetchExpense("Rakib", rakibPage);
+    fetchExpense("Hridoy", hridoyPage);
+  }, [antorPage, rakibPage, hridoyPage]);
 
   const handleCloseModal = () => {
     setIsOpen(false);
     setSelectedExpense(null);
   };
 
-  // Toggle delete confirmation modal
   const toggleDeleteModal = () => setOpenDeleteModal(!openDeleteModal);
 
-  // Open delete confirmation modal with selected review ID
   const openDeleteConfirmModal = (itemId) => {
     setSelectedItemId(itemId);
     toggleDeleteModal();
   };
 
-  // Handle delete action
   const handleDelete = async () => {
     if (selectedItemId) {
       try {
@@ -251,7 +350,7 @@ const Expenses = () => {
           }
         );
         if (!response.ok) {
-          toast.error("Failed to delete review");
+          toast.error("Failed to delete expense");
         } else {
           toast.success("Expense deleted successfully", {
             autoClose: 2000,
@@ -261,10 +360,12 @@ const Expenses = () => {
             draggable: true,
             progress: undefined,
           });
-          fetchExpense();
+          fetchExpense("Antor", antorPage);
+          fetchExpense("Rakib", rakibPage);
+          fetchExpense("Hridoy", hridoyPage);
         }
       } catch (error) {
-        toast.error("An error occurred while deleting the review");
+        toast.error("An error occurred while deleting the expense");
       }
     }
   };
@@ -275,14 +376,7 @@ const Expenses = () => {
         <div>
           <div>
             <h1 className="text-xl font-bold">Expenses</h1>
-            <p className="text-lg font-semibold">
-              (Total: {""}
-              {expenses?.reduce(
-                (sum, item) => sum + Number(item.amount || 0),
-                0
-              )}{" "}
-              BDT)
-            </p>
+            <p className="text-lg font-semibold">(Total: {totalExpenses} TK)</p>
           </div>
           <p>
             {expenses?.length > 0
@@ -304,237 +398,50 @@ const Expenses = () => {
       </div>
 
       <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <h1 className="text-lg font-bold">Expenses of Antor</h1>
-          <div className="mt-2 overflow-x-auto">
-            <table className="min-w-full bg-white border">
-              <thead>
-                <tr>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                    SL
-                  </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                    Amount (TK)
-                  </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                    Description
-                  </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                    Date
-                  </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {antorExpenses?.map((expense, index) => (
-                  <tr key={index} className="hover:bg-gray-100">
-                    <td className="px-6 py-4 border-b">{index + 1}</td>
-                    <td className="px-6 py-4 border-b">{expense?.amount}</td>
-                    <td
-                      className="px-6 py-4 border-b"
-                      title={expense?.description}
-                    >
-                      {expense?.description?.length > 20
-                        ? `${expense.description.slice(0, 20)}...`
-                        : expense.description}
-                    </td>
-                    <td className="px-6 py-4 border-b">{expense?.date}</td>
-                    <td className="px-6 py-4 border-b">
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => {
-                            setSelectedExpense(expense);
-                            setIsOpen(true);
-                          }}
-                          className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-300"
-                        >
-                          <FontAwesomeIcon icon={faEdit} />
-                        </button>
-                        <button
-                          onClick={() => openDeleteConfirmModal(expense._id)}
-                          className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-300"
-                        >
-                          <FontAwesomeIcon icon={faTrash} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+        {/* Antor Expenses Table with Pagination */}
+        <ExpenseTable
+          title="Expenses of Antor"
+          expenses={antorExpenses}
+          subTotal={antorSubTotal}
+          onEdit={(expense) => {
+            setSelectedExpense(expense);
+            setIsOpen(true);
+          }}
+          onDelete={openDeleteConfirmModal}
+          currentPage={antorPage}
+          totalPages={antorTotalPages}
+          onPageChange={setAntorPage}
+        />
 
-                {/* Subtotal Row */}
-                <tr className="bg-gray-200 font-semibold">
-                  <td className="px-6 py-4 border-t" colSpan={1}>
-                    Subtotal
-                  </td>
-                  <td className="px-6 py-4 border-t">
-                    {antorExpenses?.reduce(
-                      (sum, item) => sum + Number(item.amount || 0),
-                      0
-                    )}{" "}
-                    TK
-                  </td>
-                  <td className="px-6 py-4 border-t" colSpan={3}></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div>
-          <h1 className="text-lg font-bold">Expenses of Rakib</h1>
-          <div className="mt-2 overflow-x-auto">
-            <table className="min-w-full bg-white border">
-              <thead>
-                <tr>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                    SL
-                  </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                    Amount (TK)
-                  </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                    Description
-                  </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                    Date
-                  </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {rakibExpenses?.map((expense, index) => (
-                  <tr key={index} className="hover:bg-gray-100">
-                    <td className="px-6 py-4 border-b">{index + 1}</td>
-                    <td className="px-6 py-4 border-b">{expense?.amount}</td>
-                    <td
-                      className="px-6 py-4 border-b"
-                      title={expense?.description}
-                    >
-                      {expense?.description?.length > 20
-                        ? `${expense.description.slice(0, 20)}...`
-                        : expense.description}
-                    </td>
-                    <td className="px-6 py-4 border-b">{expense?.date}</td>
-                    <td className="px-6 py-4 border-b">
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => {
-                            setSelectedExpense(expense);
-                            setIsOpen(true);
-                          }}
-                          className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-300"
-                        >
-                          <FontAwesomeIcon icon={faEdit} />
-                        </button>
-                        <button
-                          onClick={() => openDeleteConfirmModal(expense._id)}
-                          className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-300"
-                        >
-                          <FontAwesomeIcon icon={faTrash} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+        {/* Rakib Expenses Table with Pagination */}
+        <ExpenseTable
+          title="Expenses of Rakib"
+          expenses={rakibExpenses}
+          subTotal={rakibSubTotal}
+          onEdit={(expense) => {
+            setSelectedExpense(expense);
+            setIsOpen(true);
+          }}
+          onDelete={openDeleteConfirmModal}
+          currentPage={rakibPage}
+          totalPages={rakibTotalPages}
+          onPageChange={setRakibPage}
+        />
 
-                {/* Subtotal Row */}
-                <tr className="bg-gray-200 font-semibold">
-                  <td className="px-6 py-4 border-t" colSpan={1}>
-                    Subtotal
-                  </td>
-                  <td className="px-6 py-4 border-t">
-                    {rakibExpenses?.reduce(
-                      (sum, item) => sum + Number(item.amount || 0),
-                      0
-                    )}
-                    TK
-                  </td>
-                  <td className="px-6 py-4 border-t" colSpan={3}></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div>
-          <h1 className="text-lg font-bold">Expenses of Hridoy</h1>
-          <div className="mt-2 overflow-x-auto">
-            <table className="min-w-full bg-white border">
-              <thead>
-                <tr>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                    SL
-                  </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                    Amount (TK)
-                  </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                    Description
-                  </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                    Date
-                  </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {hridoyExpenses?.map((expense, index) => (
-                  <tr key={index} className="hover:bg-gray-100">
-                    <td className="px-6 py-4 border-b">{index + 1}</td>
-                    <td className="px-6 py-4 border-b">{expense?.amount}</td>
-                    <td
-                      className="px-6 py-4 border-b"
-                      title={expense?.description}
-                    >
-                      {expense?.description?.length > 20
-                        ? `${expense.description.slice(0, 20)}...`
-                        : expense.description}
-                    </td>
-                    <td className="px-6 py-4 border-b">{expense?.date}</td>
-                    <td className="px-6 py-4 border-b">
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => {
-                            setSelectedExpense(expense);
-                            setIsOpen(true);
-                          }}
-                          className="text-orange-800 border-2 border-orange-800 px-2 py-1 rounded-md text-sm hover:bg-orange-800 hover:text-white transition-all duration-300"
-                        >
-                          <FontAwesomeIcon icon={faEdit} />
-                        </button>
-                        <button
-                          onClick={() => openDeleteConfirmModal(expense._id)}
-                          className="text-red-800 border-2 border-red-800 px-2 py-1 rounded-md text-sm hover:bg-red-800 hover:text-white transition-all duration-300"
-                        >
-                          <FontAwesomeIcon icon={faTrash} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-
-                {/* Subtotal Row */}
-                <tr className="bg-gray-200 font-semibold">
-                  <td className="px-6 py-4 border-t" colSpan={1}>
-                    Subtotal
-                  </td>
-                  <td className="px-6 py-4 border-t">
-                    {hridoyExpenses?.reduce(
-                      (sum, item) => sum + Number(item.amount || 0),
-                      0
-                    )}
-                    TK
-                  </td>
-                  <td className="px-6 py-4 border-t" colSpan={3}></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+        {/* Hridoy Expenses Table with Pagination */}
+        <ExpenseTable
+          title="Expenses of Hridoy"
+          expenses={hridoyExpenses}
+          subTotal={hridoySubTotal}
+          onEdit={(expense) => {
+            setSelectedExpense(expense);
+            setIsOpen(true);
+          }}
+          onDelete={openDeleteConfirmModal}
+          currentPage={hridoyPage}
+          totalPages={hridoyTotalPages}
+          onPageChange={setHridoyPage}
+        />
       </div>
 
       <ExpenseModal
@@ -550,7 +457,7 @@ const Expenses = () => {
         handleOpen={toggleDeleteModal}
         onDelete={handleDelete}
         title="Confirm Deletion"
-        message="Are you sure you want to delete this review? This action cannot be undone."
+        message="Are you sure you want to delete this expense? This action cannot be undone."
       />
     </>
   );
