@@ -310,19 +310,19 @@ const Expenses = () => {
             <table className="min-w-full bg-white border">
               <thead>
                 <tr>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Name
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                    SL
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                     Amount (TK)
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                     Description
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                     Date
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                     Actions
                   </th>
                 </tr>
@@ -330,7 +330,7 @@ const Expenses = () => {
               <tbody>
                 {antorExpenses?.map((expense, index) => (
                   <tr key={index} className="hover:bg-gray-100">
-                    <td className="px-6 py-4 border-b">{expense?.name}</td>
+                    <td className="px-6 py-4 border-b">{index + 1}</td>
                     <td className="px-6 py-4 border-b">{expense?.amount}</td>
                     <td
                       className="px-6 py-4 border-b"
@@ -387,19 +387,19 @@ const Expenses = () => {
             <table className="min-w-full bg-white border">
               <thead>
                 <tr>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Name
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                    SL
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                     Amount (TK)
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                     Description
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                     Date
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                     Actions
                   </th>
                 </tr>
@@ -407,7 +407,7 @@ const Expenses = () => {
               <tbody>
                 {rakibExpenses?.map((expense, index) => (
                   <tr key={index} className="hover:bg-gray-100">
-                    <td className="px-6 py-4 border-b">{expense?.name}</td>
+                    <td className="px-6 py-4 border-b">{index + 1}</td>
                     <td className="px-6 py-4 border-b">{expense?.amount}</td>
                     <td
                       className="px-6 py-4 border-b"
@@ -464,19 +464,19 @@ const Expenses = () => {
             <table className="min-w-full bg-white border">
               <thead>
                 <tr>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Name
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                    SL
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                     Amount (TK)
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                     Description
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                     Date
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                     Actions
                   </th>
                 </tr>
@@ -484,7 +484,7 @@ const Expenses = () => {
               <tbody>
                 {hridoyExpenses?.map((expense, index) => (
                   <tr key={index} className="hover:bg-gray-100">
-                    <td className="px-6 py-4 border-b">{expense?.name}</td>
+                    <td className="px-6 py-4 border-b">{index + 1}</td>
                     <td className="px-6 py-4 border-b">{expense?.amount}</td>
                     <td
                       className="px-6 py-4 border-b"
