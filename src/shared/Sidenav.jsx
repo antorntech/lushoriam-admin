@@ -18,6 +18,11 @@ const menuItems = [
     icon: "/img/icons/order",
   },
   {
+    title: "Return Parcels",
+    link: "/return-parcels",
+    icon: "/img/icons/order",
+  },
+  {
     title: "Sliders",
     link: "/sliders",
     icon: "/img/icons/slider",

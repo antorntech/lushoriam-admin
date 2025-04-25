@@ -13,10 +13,54 @@ import ReadyToParcel from "../components/ReadyToParcel";
 
 const API_URL = "https://lushoriam-server-abnd.vercel.app";
 
+const ReturnParcelModal = ({ show, onClose, onSubmit, formData, onChange }) => {
+  if (!show) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-5">
+      <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+        <h2 className="text-lg font-semibold mb-4">Return Parcel Request</h2>
+
+        <div className="mb-4">
+          <label className="block mb-1 font-medium">Reason for Return</label>
+          <textarea
+            name="reason"
+            value={formData.reason}
+            onChange={onChange}
+            rows={4}
+            placeholder="Write reason here..."
+            className="w-full border border-gray-300 focus-within:border-primary outline-none rounded px-3 py-2"
+          ></textarea>
+        </div>
+
+        <div className="flex justify-end space-x-3">
+          <button
+            onClick={onSubmit}
+            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+          >
+            Submit
+          </button>
+          <button
+            onClick={onClose}
+            className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400 transition"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const date = new Date().toLocaleDateString();
+  const [showModal, setShowModal] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [formData, setFormData] = useState({
+    reason: "",
+  });
 
   useEffect(() => {
     fetchOrders();
@@ -69,6 +113,59 @@ const Orders = () => {
     } catch (error) {
       console.error("Error updating status:", error);
       alert("Something went wrong! Try again.");
+    }
+  };
+
+  // Function to open the modal for returning a parcel
+  const handleOpenModal = (order) => {
+    setSelectedOrder(order);
+    setFormData({ reason: "" });
+    setShowModal(true);
+  };
+
+  // Function to close the modal
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedOrder(null);
+  };
+
+  // Function to handle form changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Function to handle form submission
+  const handleSubmit = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:8000/api/v1/returnparcels/add`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+          body: JSON.stringify({
+            customerId: selectedOrder._id,
+            orderId: selectedOrder.orderId,
+            customerName: selectedOrder.name,
+            mobile: selectedOrder.mobile,
+            reason: formData.reason,
+          }),
+        }
+      );
+
+      const data = await res.json();
+      if (data.success) {
+        toast.success("Return request submitted!");
+        handleCloseModal();
+      } else {
+        toast.error("Failed to submit return.");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Server error");
     }
   };
 
@@ -154,6 +251,7 @@ const Orders = () => {
                   </th>
                   <th className="px-4 py-2 border whitespace-nowrap">Status</th>
                   <th className="px-4 py-2 border whitespace-nowrap">Action</th>
+                  <th className="px-4 py-2 border whitespace-nowrap">Return</th>
                   <th className="px-4 py-2 border whitespace-nowrap">Print</th>
                 </tr>
               </thead>
@@ -179,13 +277,13 @@ const Orders = () => {
                         className={`text-white px-2 py-1 rounded-md capitalize ${
                           order.status === "pending"
                             ? "bg-yellow-600"
-                            : order.status === "processing"
-                            ? "bg-blue-600"
-                            : order.status === "shipped"
-                            ? "bg-purple-600"
                             : order.status === "delivered"
                             ? "bg-green-600"
-                            : "bg-red-600"
+                            : order.status === "cancelled"
+                            ? "bg-red-600"
+                            : order.status === "returned"
+                            ? "bg-gray-600"
+                            : null
                         }`}
                       >
                         {order.status}
@@ -201,14 +299,27 @@ const Orders = () => {
                             order.productId
                           )
                         }
+                        disabled={order?.status === "returned"}
                         className="px-3 py-1 border rounded bg-white focus:outline-none"
                       >
                         <option value="pending">Pending</option>
-                        <option value="processing">Processing</option>
-                        <option value="shipped">Shipped</option>
                         <option value="delivered">Delivered</option>
                         <option value="cancelled">Cancelled</option>
                       </select>
+                    </td>
+                    <td className="px-4 py-3 border">
+                      {order.status !== "returned" ? (
+                        <button
+                          onClick={() => handleOpenModal(order)}
+                          className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
+                        >
+                          Return
+                        </button>
+                      ) : (
+                        <button className="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700 transition">
+                          Return
+                        </button>
+                      )}
                     </td>
                     <td className="px-4 py-3 border">
                       <PDFDownloadLink
@@ -240,6 +351,15 @@ const Orders = () => {
           <Loader />
         )
       }
+
+      {/* Modal Component */}
+      <ReturnParcelModal
+        show={showModal}
+        onClose={handleCloseModal}
+        onSubmit={handleSubmit}
+        formData={formData}
+        onChange={handleChange}
+      />
     </div>
   );
 };
