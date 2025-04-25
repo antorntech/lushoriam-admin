@@ -4,6 +4,8 @@ import Loader from "../loader/Loader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 
+const API_URL = "https://lushoriam-server-abnd.vercel.app";
+
 // Modal Component for updating the status
 const UpdateStatusModal = ({ isOpen, onClose, returnParcel, onUpdate }) => {
   const [status, setStatus] = useState(returnParcel?.status || "pending");
@@ -11,7 +13,7 @@ const UpdateStatusModal = ({ isOpen, onClose, returnParcel, onUpdate }) => {
   const handleUpdate = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/v1/returnparcels/update/${returnParcel._id}`,
+        `${API_URL}/api/v1/returnparcels/update/${returnParcel._id}`,
         {
           method: "PUT",
           headers: {
@@ -89,15 +91,12 @@ const ReturnParcels = () => {
   useEffect(() => {
     const fetchReturnParcels = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:8000/api/v1/returnparcels",
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-            },
-          }
-        );
+        const response = await fetch(`${API_URL}/api/v1/returnparcels`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
         const data = await response.json();
         if (response.ok) {
           setReturnParcels(data.data);
