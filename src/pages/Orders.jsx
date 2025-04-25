@@ -99,7 +99,7 @@ const Orders = () => {
                     <span className="text-white font-medium">Loading...</span>
                   ) : (
                     <span className="text-white">
-                      Ready To Parcel
+                      Parcel
                       <FontAwesomeIcon
                         icon={faPrint}
                         className="ml-2 text-xl text-white"
