@@ -138,23 +138,20 @@ const Orders = () => {
   // Function to handle form submission
   const handleSubmit = async () => {
     try {
-      const res = await fetch(
-        `http://localhost:8000/api/v1/returnparcels/add`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-          body: JSON.stringify({
-            customerId: selectedOrder._id,
-            orderId: selectedOrder.orderId,
-            customerName: selectedOrder.name,
-            mobile: selectedOrder.mobile,
-            reason: formData.reason,
-          }),
-        }
-      );
+      const res = await fetch(`${API_URL}/api/v1/returnparcels/add`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+        body: JSON.stringify({
+          customerId: selectedOrder._id,
+          orderId: selectedOrder.orderId,
+          customerName: selectedOrder.name,
+          mobile: selectedOrder.mobile,
+          reason: formData.reason,
+        }),
+      });
 
       const data = await res.json();
       if (data.success) {
