@@ -50,7 +50,7 @@ const Faq = () => {
     if (selectedItemId) {
       try {
         const response = await fetch(
-          `http://localhost:8000/api/v1/faqs/delete/${selectedItemId}`,
+          `${API_URL}/api/v1/faqs/delete/${selectedItemId}`,
           {
             method: "DELETE",
           }
