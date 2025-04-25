@@ -43,17 +43,14 @@ const Orders = () => {
   // Function to update order status
   const handleStatusChange = async (orderId, newStatus, productId) => {
     try {
-      const response = await fetch(
-        `http://localhost:8000/api/v1/orders/${orderId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-          body: JSON.stringify({ productId, status: newStatus }),
-        }
-      );
+      const response = await fetch(`${API_URL}/api/v1/orders/${orderId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+        body: JSON.stringify({ productId, status: newStatus }),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to update order status");
