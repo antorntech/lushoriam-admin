@@ -264,7 +264,7 @@ const ExpenseTable = ({
 };
 
 const Expenses = () => {
-  const limit = 5;
+  const limit = 10;
   const [expenses, setExpenses] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
