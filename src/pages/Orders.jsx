@@ -276,7 +276,8 @@ const Orders = () => {
                             ? "bg-yellow-600"
                             : order.status === "delivered"
                             ? "bg-green-600"
-                            : order.status === "cancelled"
+                            : order.status === "cancelled" ||
+                              order.status === "rejected"
                             ? "bg-red-600"
                             : order.status === "returned"
                             ? "bg-gray-600"
@@ -305,7 +306,8 @@ const Orders = () => {
                       </select>
                     </td>
                     <td className="px-4 py-3 border">
-                      {order.status !== "returned" ? (
+                      {order.status !== "returned" ||
+                      order.status !== "delivered" ? (
                         <button
                           onClick={() => handleOpenModal(order)}
                           className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
@@ -313,7 +315,7 @@ const Orders = () => {
                           Return
                         </button>
                       ) : (
-                        <button className="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700 transition">
+                        <button className="bg-gray-500 text-white px-3 py-1 rounded transition">
                           Return
                         </button>
                       )}
