@@ -20,7 +20,7 @@ const menuItems = [
   {
     title: "Return Parcels",
     link: "/return-parcels",
-    icon: "/img/icons/order",
+    icon: "/img/icons/returnparcel",
   },
   {
     title: "Sliders",

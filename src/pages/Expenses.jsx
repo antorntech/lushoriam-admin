@@ -385,9 +385,8 @@ const Expenses = () => {
             <p className="text-lg font-semibold">(Total: {totalExpenses} TK)</p>
           </div>
           <p>
-            {expenses?.length > 0
-              ? "Expenses are available"
-              : "No expenses available"}
+            <span className="font-semibold">Note:</span> Expenses are divided
+            among Antor, Rakib, and Hridoy.
           </p>
         </div>
         <div>

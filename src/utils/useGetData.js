@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 const mainURL = "https://lushoriam-server-abnd.vercel.app/api/v1/";
+// const mainURL = "http://localhost:8000/api/v1/";
 
 const useGetData = (url) => {
   const [data, setData] = useState(null);
