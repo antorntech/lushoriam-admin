@@ -53,7 +53,7 @@ const ChartComponent = () => {
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`w-full px-4 py-2 rounded-md border capitalize ${
+            className={`w-full px-2 md:px-4 py-2 rounded-md border capitalize ${
               activeTab === tab
                 ? "bg-primary text-white"
                 : "bg-white text-gray-700 border-gray-300"
@@ -291,22 +291,17 @@ const Home = () => {
           </div>
         </div>
       </div>
-      <div className="w-full lg:w-[30%] bg-white custom-shadow2 rounded-md flex flex-col items-center p-1 md:p-5">
+      <div className="w-full lg:w-[30%] bg-white custom-shadow2 rounded-md flex flex-col items-center p-1 ">
         <div className="flex flex-col items-center">
-          <div className="w-[90px] h-[90px] mt-5 rounded-full bg-[#050828] flex items-center justify-center">
-            <Avatar
-              src="https://docs.material-tailwind.com/img/face-2.jpg"
-              alt="avatar"
-              size="xl"
-            />
-            {/* <h1 className="text-4xl font-semibold text-white">AD</h1> */}
-          </div>
           <div className="w-full text-center mt-1">
-            <h2 className="text-xl font-bold">Mr. Admin</h2>
-            <p className="text-sm text-gray-500">Admin, Lushoriam</p>
+            <img src="/img/logo.svg" alt="Logo" className="w-44 md:w-52" />
+            <h2 className="text-xl md:text-2xl font-bold">Sales Report</h2>
+            <p className="text-sm text-gray-500">
+              Sales report can be seen here
+            </p>
           </div>
         </div>
-        <div className="w-full mt-5">
+        <div className="w-full mt-5 md:mt-0">
           <ChartComponent />
         </div>
       </div>

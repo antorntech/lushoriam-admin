@@ -297,7 +297,12 @@ const Orders = () => {
                             order.productId
                           )
                         }
-                        disabled={order?.status === "returned"}
+                        disabled={
+                          order?.status === "returned" ||
+                          order?.status === "delivered" ||
+                          order?.status === "cancelled" ||
+                          order?.status === "rejected"
+                        }
                         className="px-3 py-1 border rounded bg-white focus:outline-none"
                       >
                         <option value="pending">Pending</option>
@@ -306,16 +311,18 @@ const Orders = () => {
                       </select>
                     </td>
                     <td className="px-4 py-3 border">
-                      {order.status !== "returned" ||
-                      order.status !== "delivered" ? (
+                      {order.status == "returned" ||
+                      order.status == "delivered" ||
+                      order.status == "cancelled" ||
+                      order.status == "rejected" ? (
+                        <button className="bg-gray-400 text-white px-3 py-1 rounded transition cursor-not-allowed">
+                          Return
+                        </button>
+                      ) : (
                         <button
                           onClick={() => handleOpenModal(order)}
                           className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
                         >
-                          Return
-                        </button>
-                      ) : (
-                        <button className="bg-gray-500 text-white px-3 py-1 rounded transition">
                           Return
                         </button>
                       )}
