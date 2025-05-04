@@ -71,8 +71,6 @@ const Orders = () => {
 
   const [totalOrders, setTotalOrders] = useState(0);
 
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
-
   // ⏳ Debounce search
   useEffect(() => {
     const delayDebounce = setTimeout(() => {

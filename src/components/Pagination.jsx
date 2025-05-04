@@ -38,6 +38,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           key={page}
           onClick={() => onPageChange(page)}
           style={{
+            color: page === currentPage ? "#0CC0DF" : "#000",
             fontWeight: page === currentPage ? "bold" : "normal",
           }}
         >
