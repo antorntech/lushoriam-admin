@@ -274,6 +274,8 @@ const Orders = () => {
                         className={`text-white px-2 py-1 rounded-md capitalize ${
                           order.status === "pending"
                             ? "bg-yellow-600"
+                            : order.status === "confirmed"
+                            ? "bg-blue-600"
                             : order.status === "delivered"
                             ? "bg-green-600"
                             : order.status === "cancelled" ||
@@ -306,6 +308,7 @@ const Orders = () => {
                         className="px-3 py-1 border rounded bg-white focus:outline-none"
                       >
                         <option value="pending">Pending</option>
+                        <option value="confirmed">Confirm</option>
                         <option value="delivered">Delivered</option>
                         <option value="cancelled">Cancelled</option>
                       </select>

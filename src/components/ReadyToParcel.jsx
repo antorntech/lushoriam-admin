@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
 
 const ReadyToParcel = ({ readyOrders }) => {
   const readyToParcels = (readyOrders || []).filter(
-    (order) => order?.status === "pending"
+    (order) => order?.status === "confirmed"
   );
 
   const date = new Date().toLocaleDateString();
