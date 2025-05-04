@@ -307,7 +307,12 @@ const Orders = () => {
                         }
                         className="px-3 py-1 border rounded bg-white focus:outline-none"
                       >
-                        <option value="pending">Pending</option>
+                        <option
+                          value="pending"
+                          disabled={order?.status === "confirmed"}
+                        >
+                          Pending
+                        </option>
                         <option value="confirmed">Confirm</option>
                         <option value="delivered">Delivered</option>
                         <option value="cancelled">Cancelled</option>
