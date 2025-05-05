@@ -201,7 +201,7 @@ const Home = () => {
             </div>
             <div className="flex items-center justify-between bg-white border border-gray-200 rounded-md p-5">
               <div className="">
-                <h2 className="text-xl font-bold">Confirmed Orders</h2>
+                <h2 className="text-xl font-bold">Today Confirmed Orders</h2>
                 <p className="text-3xl font-bold text-primary">
                   {todaysConfirmedOrders !== null ? todaysConfirmedOrders : 0}
                 </p>
