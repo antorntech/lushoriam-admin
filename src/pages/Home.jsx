@@ -203,9 +203,7 @@ const Home = () => {
               <div className="">
                 <h2 className="text-xl font-bold">Confirmed Orders</h2>
                 <p className="text-3xl font-bold text-primary">
-                  {todaysConfirmedOrders !== null
-                    ? todaysConfirmedOrders
-                    : "No data"}
+                  {todaysConfirmedOrders !== null ? todaysConfirmedOrders : 0}
                 </p>
               </div>
               <div className="">
