@@ -106,18 +106,35 @@ const ChartComponent = () => {
 };
 
 const Home = () => {
-  const orders = useGetData("orders");
+  const [todaysConfirmedOrders, setTodaysConfirmedOrders] = useState(null);
+
+  // Custom hook to fetch the data
+  const todaysConfirmedData = useGetData("orders/todays/confirmed");
+
+  useEffect(() => {
+    if (todaysConfirmedData) {
+      setTodaysConfirmedOrders(todaysConfirmedData?.confirmedOrdersCount); // Extract confirmedOrdersCount
+    }
+  }, [todaysConfirmedData]);
+
+  const orders = useGetData("orders/simply");
   const reviews = useGetData("reviews");
   const returnParcel = useGetData("returnparcels");
   const products = useGetData("products");
+  const expenses = useGetData("expenses");
   const activeProduct = products?.find(
     (product) => product.status === "Active"
   );
 
   const remainingProductPrice = activeProduct?.price * activeProduct?.quantity;
 
-  const pendingOrders = orders?.filter((order) => order.status === "pending");
-  const completedOrders = orders?.filter(
+  const totalOrders = orders?.orders?.length;
+
+  const pendingOrders = orders?.orders?.filter(
+    (order) => order.status === "pending"
+  );
+
+  const completedOrders = orders?.orders?.filter(
     (order) => order.status === "delivered"
   );
 
@@ -126,7 +143,6 @@ const Home = () => {
     0
   );
 
-  const expenses = useGetData("expenses");
   const totalExpenses = expenses?.totalExpenseAmount;
 
   return (
@@ -184,6 +200,23 @@ const Home = () => {
               </div>
             </div>
             <div className="flex items-center justify-between bg-white border border-gray-200 rounded-md p-5">
+              <div className="">
+                <h2 className="text-xl font-bold">Confirmed Orders</h2>
+                <p className="text-3xl font-bold text-primary">
+                  {todaysConfirmedOrders !== null
+                    ? todaysConfirmedOrders
+                    : "No data"}
+                </p>
+              </div>
+              <div className="">
+                <img
+                  src="/img/icons/pending-orders.png"
+                  alt="pending-orders.png"
+                  className="size-12 object-contain"
+                />
+              </div>
+            </div>
+            <div className="flex items-center justify-between bg-white border border-gray-200 rounded-md p-5">
               <div>
                 <h2 className="text-xl font-bold">Completed Orders</h2>
                 <p className="text-3xl font-bold text-primary">
@@ -201,9 +234,7 @@ const Home = () => {
             <div className="flex items-center justify-between bg-white border border-gray-200 rounded-md p-5">
               <div>
                 <h2 className="text-xl font-bold">Total Orders</h2>
-                <p className="text-3xl font-bold text-primary">
-                  {orders?.length}
-                </p>
+                <p className="text-3xl font-bold text-primary">{totalOrders}</p>
               </div>
               <div>
                 <img
