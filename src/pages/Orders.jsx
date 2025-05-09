@@ -12,6 +12,7 @@ import Invoice from "../components/Invoice";
 import Loader from "../loader/Loader";
 import ReadyToParcel from "../components/ReadyToParcel";
 import Pagination from "../components/Pagination";
+import DateTimeDisplay from "../components/DateTimeDisplay";
 
 const API_URL = "https://lushoriam-server-abnd.vercel.app";
 
@@ -311,6 +312,9 @@ const Orders = () => {
                       Order ID
                     </th>
                     <th className="px-4 py-2 border whitespace-nowrap">
+                      Order Time
+                    </th>
+                    <th className="px-4 py-2 border whitespace-nowrap">
                       Customer
                     </th>
                     <th className="px-4 py-2 border whitespace-nowrap">
@@ -318,9 +322,6 @@ const Orders = () => {
                     </th>
                     <th className="px-4 py-2 border whitespace-nowrap">
                       Mobile
-                    </th>
-                    <th className="px-4 py-2 border whitespace-nowrap">
-                      Product
                     </th>
                     <th className="px-4 py-2 border whitespace-nowrap">
                       Quantity
@@ -349,6 +350,9 @@ const Orders = () => {
                   {orders.map((order) => (
                     <tr key={order._id} className="text-center border-b">
                       <td className="px-4 py-3 border">{order.orderId}</td>
+                      <td className="min-w-64 px-4 py-3 border">
+                        <DateTimeDisplay isoDate={order.createdAt} />
+                      </td>
                       <td className="min-w-44 px-4 py-3 border">
                         {order.name}
                       </td>
@@ -358,11 +362,10 @@ const Orders = () => {
                       <td className="min-w-64 px-4 py-3 border">
                         {order.mobile}
                       </td>
-                      <td className="min-w-44 px-4 py-3 border">
-                        {order.productName}
-                      </td>
                       <td className="px-4 py-3 border">{order.quantity}</td>
-                      <td className="px-4 py-3 border">{order.delivery}</td>
+                      <td className="px-4 py-3 border capitalize">
+                        {order.delivery}
+                      </td>
                       <td className="px-4 py-3 border">{order.totalAmount}</td>
                       <td className="px-4 py-3 border">
                         <span
