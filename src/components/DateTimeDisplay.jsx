@@ -64,7 +64,7 @@ const DateTimeDisplay = ({ isoDate }) => {
   return (
     <div className="text-sm space-y-1">
       <p>
-        {day}, {dayNum} {month}, {year} | {banglaTime}
+        {day} - {banglaTime} ({dayNum} {month}, {year})
       </p>
     </div>
   );

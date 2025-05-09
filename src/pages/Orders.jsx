@@ -350,7 +350,7 @@ const Orders = () => {
                   {orders.map((order) => (
                     <tr key={order._id} className="text-center border-b">
                       <td className="px-4 py-3 border">{order.orderId}</td>
-                      <td className="min-w-64 px-4 py-3 border">
+                      <td className="min-w-72 px-4 py-3 border">
                         <DateTimeDisplay isoDate={order.createdAt} />
                       </td>
                       <td className="min-w-44 px-4 py-3 border">
