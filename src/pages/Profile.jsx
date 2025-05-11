@@ -1,14 +1,111 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import Loader from "../loader/Loader";
+
+// const API_URL = "https://lushoriam-server-abnd.vercel.app";
+const API_URL = "http://localhost:8000";
+
+const ChangePassword = () => {
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setError("");
+    setMessage("");
+
+    if (password.length < 6) {
+      return setError("পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে");
+    }
+
+    if (password !== confirmPassword) {
+      return setError("পাসওয়ার্ড এবং কনফার্ম পাসওয়ার্ড মিলছে না");
+    }
+
+    setLoading(true);
+
+    try {
+      const res = await fetch(`${API_URL}/api/v1/admin/change-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+        body: JSON.stringify({ password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "❌ পাসওয়ার্ড পরিবর্তনে সমস্যা হয়েছে");
+      }
+
+      setMessage("✅ পাসওয়ার্ড সফলভাবে পরিবর্তন হয়েছে");
+      setPassword("");
+      setConfirmPassword("");
+    } catch (err) {
+      setError(err.message || "❌ পাসওয়ার্ড পরিবর্তন ব্যর্থ হয়েছে");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="w-full max-w-xl mx-auto p-6 bg-white rounded-md shadow-md">
+      <h2 className="text-2xl font-bold mb-4">🔐 পাসওয়ার্ড পরিবর্তন</h2>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium mb-1">New Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full p-2.5 rounded-md border border-gray-300  text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:border-primary focus:border-t-border-primary focus:outline-none"
+            placeholder="নতুন পাসওয়ার্ড"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">
+            Confirm Password
+          </label>
+          <input
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            className="w-full p-2.5 rounded-md border border-gray-300  text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:border-primary focus:border-t-border-primary focus:outline-none"
+            placeholder="পাসওয়ার্ড নিশ্চিত করুন"
+            required
+          />
+        </div>
+
+        {error && <p className="text-red-600 text-sm">{error}</p>}
+        {message && <p className="text-green-600 text-sm">{message}</p>}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+        >
+          {loading ? "Processing..." : "Change Password"}
+        </button>
+      </form>
+    </div>
+  );
+};
 
 const Profile = () => {
   const initialData = JSON.parse(localStorage.getItem("profileData")) || {
-    name: "Abdul Hamid",
-    designation: "COO, PeopleNTech Institute of IT",
+    name: "Admin",
+    designation: "Owner",
     email: "admin@gmail.com",
-    phone: "01534 855 125",
-    address: "Panthapath, Dhaka",
+    phone: "01608 081 907",
+    address: "Lalmatia, Mohammadpur, Dhaka",
     avatar: "/img/avatar.png",
   };
 
@@ -42,132 +139,8 @@ const Profile = () => {
   };
 
   return (
-    <div>
-      <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
-        <div>
-          <h1 className="text-xl font-bold">Profile</h1>
-          <p className="text-sm text-gray-500">
-            Profile details are {data ? "" : "not"} available here.
-          </p>
-        </div>
-        <div>
-          <button
-            onClick={() => setEditMode(!editMode)}
-            className="bg-primary text-white px-4 py-2 rounded-md mt-2 md:mt-0"
-          >
-            {editMode ? "Cancel" : "Update Profile"}
-          </button>
-          {editMode && (
-            <button
-              onClick={saveProfile}
-              className="bg-green-500 text-white px-4 py-2 rounded-md ml-2"
-            >
-              Save
-            </button>
-          )}
-        </div>
-      </div>
-      {data ? (
-        <>
-          <div className="mt-5 flex flex-col md:flex-row items-center justify-between gap-5">
-            <div className="w-full md:w-1/3 shadow-md rounded-md p-4 flex flex-col items-center">
-              <img
-                src={data.avatar}
-                alt="Profile Avatar"
-                className="w-28 h-28 object-cover rounded-full"
-              />
-              {editMode ? (
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                />
-              ) : (
-                <>
-                  <h1 className="text-xl font-bold">{data.name}</h1>
-                  <p className="text-sm text-gray-500">{data.designation}</p>
-                </>
-              )}
-            </div>
-            <div className="w-full md:w-2/3 shadow-md rounded-md p-4">
-              <h1 className="text-xl font-bold mb-4">Contact Details</h1>
-              {editMode ? (
-                <>
-                  <label className="block">
-                    <span className="font-bold text-black">Name:</span>
-                    <input
-                      type="text"
-                      name="name"
-                      value={newData.name}
-                      onChange={handleInputChange}
-                      className="block w-full mt-1 p-2 border border-gray-300 rounded-md"
-                    />
-                  </label>
-                  <label className="block mt-2">
-                    <span className="font-bold text-black">Designation:</span>
-                    <input
-                      type="text"
-                      name="designation"
-                      value={newData.designation}
-                      onChange={handleInputChange}
-                      className="block w-full mt-1 p-2 border border-gray-300 rounded-md"
-                    />
-                  </label>
-                  <label className="block mt-2">
-                    <span className="font-bold text-black">Email:</span>
-                    <input
-                      type="email"
-                      name="email"
-                      value={newData.email}
-                      onChange={handleInputChange}
-                      className="block w-full mt-1 p-2 border border-gray-300 rounded-md"
-                    />
-                  </label>
-                  <label className="block mt-2">
-                    <span className="font-bold text-black">Phone:</span>
-                    <input
-                      type="text"
-                      name="phone"
-                      value={newData.phone}
-                      onChange={handleInputChange}
-                      className="block w-full mt-1 p-2 border border-gray-300 rounded-md"
-                    />
-                  </label>
-                  <label className="block mt-2">
-                    <span className="font-bold text-black">Address:</span>
-                    <input
-                      type="text"
-                      name="address"
-                      value={newData.address}
-                      onChange={handleInputChange}
-                      className="block w-full mt-1 p-2 border border-gray-300 rounded-md"
-                    />
-                  </label>
-                </>
-              ) : (
-                <>
-                  <p className="text-gray-500 text-md">
-                    <span className="font-bold text-black">Email:</span>{" "}
-                    {data.email}
-                  </p>
-                  <hr className="my-2" />
-                  <p className="text-gray-500 text-md">
-                    <span className="font-bold text-black">Phone:</span>{" "}
-                    {data.phone}
-                  </p>
-                  <hr className="my-2" />
-                  <p className="text-gray-500 text-md">
-                    <span className="font-bold text-black">Address:</span>{" "}
-                    {data.address}
-                  </p>
-                </>
-              )}
-            </div>
-          </div>
-        </>
-      ) : (
-        <Loader />
-      )}
+    <div className="w-full">
+      <ChangePassword />
     </div>
   );
 };
