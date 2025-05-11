@@ -22,7 +22,7 @@ const Header = () => {
     <div className="px-5 min-h-[70px] bg-white header-shadow flex items-center fixed top-0 w-[calc(100%-250px)] z-40">
       <div className="w-full hidden md:flex items-center justify-end bg-whtie">
         <div className="flex items-center gap-5">
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <i className="fa-solid fa-calendar-days text-[30px]"></i>
             <div>
               <p className="text-[14px] font-semibold text-black">
@@ -32,7 +32,7 @@ const Header = () => {
                 {moment().format("Do MMMM, YYYY")}
               </p>
             </div>
-          </div>
+          </div> */}
           <div className="flex items-center ">
             <Avatar
               src="https://docs.material-tailwind.com/img/face-2.jpg"
@@ -62,12 +62,19 @@ const Header = () => {
                     </div>
                   </Link>
                   <div className="h-[1px] w-full bg-gray-200 my-2"></div>
+                  <Link to={"/settings"}>
+                    <div className="w-full flex items-center gap-2 hover:text-primary  transition-all duration-300">
+                      <i class="fa-solid fa-gear"></i>
+                      <p>Settings</p>
+                    </div>
+                  </Link>
+                  {/* <div className="h-[1px] w-full bg-gray-200 my-2"></div>
                   <Link to={"/profile"}>
                     <div className="w-full flex items-center gap-2 hover:text-primary  transition-all duration-300">
                       <i className="fa-regular fa-user"></i>
                       <p>Profile</p>
                     </div>
-                  </Link>
+                  </Link> */}
                   <div className="h-[1px] w-full bg-gray-200 my-2"></div>
                   <div
                     className="w-full flex items-center gap-2 hover:text-primary  cursor-pointer transition-all duration-300"

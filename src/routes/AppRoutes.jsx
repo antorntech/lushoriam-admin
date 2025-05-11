@@ -19,6 +19,7 @@ import AddProduct from "../pages/AddProduct";
 import EditProduct from "../pages/EditProduct";
 import Expenses from "../pages/Expenses";
 import ReturnParcels from "../pages/ReturnParcels";
+import Settings from "../pages/Settings";
 
 const AppRoutes = () => {
   const user = localStorage.getItem("accessToken");
@@ -44,6 +45,7 @@ const AppRoutes = () => {
           <Route path="/faqs/add-faq" element={<AddFaq />} />
           <Route path="/faqs/edit-faq/:id" element={<EditFaq />} />
           <Route path="/notification" element={<Notification />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<Navigate to="/" />} />
         </>
